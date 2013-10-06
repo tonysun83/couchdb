@@ -15,7 +15,6 @@
  * the License.
  **/
 
-#include <iostream>
 #include <cstring>
 
 #include "erl_nif_compat.h"
@@ -41,7 +40,7 @@ class SnappyNifSink : public snappy::Sink
     public:
         SnappyNifSink(ErlNifEnv* e);
         ~SnappyNifSink();
-        
+
         void Append(const char* data, size_t n);
         char* GetAppendBuffer(size_t len, char* scratch);
         ErlNifBinary& getBin();
@@ -80,7 +79,7 @@ char*
 SnappyNifSink::GetAppendBuffer(size_t len, char* scratch)
 {
     size_t sz;
-    
+
     if((length + len) > bin.size) {
         sz = (len * 4) < 8192 ? 8192 : (len * 4);
 
@@ -119,7 +118,7 @@ static inline ERL_NIF_TERM
 make_ok(ErlNifEnv* env, ERL_NIF_TERM mesg)
 {
     ERL_NIF_TERM ok = make_atom(env, "ok");
-    return enif_make_tuple2(env, ok, mesg);   
+    return enif_make_tuple2(env, ok, mesg);
 }
 
 
