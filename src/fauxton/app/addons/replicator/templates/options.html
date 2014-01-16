@@ -1,0 +1,35 @@
+<!--
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+
+<span class="options off">Advanced Options</span>
+<div class="advancedOptions hide">
+	<h4>Apply filters</h4>
+	<p>Sometimes you don't want to transfer all documents from source to target. You can include one or more filter functions in a design document on the source and then tell the replicator to use them.</p>
+	<label for="filter">Enter the design doc and filter name</label>
+	<input type="text" placeholder="myddoc/myfilter" name="filter" id="filter"/>
+	<label for="query">Add query parameters (optional)</label>
+	<input type="text" placeholder='{"key":"value"}' name="query_params" id="query"/>
+
+	<hr>
+	<h4>Named Document Replication</h4>
+	<p>Sometimes you only want to replicate some documents. For this simple case you do not need to write a filter function. Simply add the list of keys, separated by commas.</p>
+	<input type="text" placeholder="foo, bar, baz" name="doc_ids" id="doc_ids"/>
+
+	<hr>
+	<h4>Replicate through a proxy</h4>
+	<p>Pass a "proxy" argument in the replication data to have replication go through an HTTP proxy</p>
+	<input type="text" placeholder="http://localhost:8888" name="proxy" id="proxy"/>
+
+</div>
+

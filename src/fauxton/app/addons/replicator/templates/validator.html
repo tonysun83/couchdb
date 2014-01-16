@@ -1,0 +1,125 @@
+<!--
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<td colspan="6">
+	<button class="close">&times;</button>
+	<p>Here are the basic issues that might have occurred. If your replication passes this test, look at it in the docs for other issues or contact us.</p>
+	<dl class="dl-horizontal replication-validator">
+
+		<dt>Does your replication have a Source?</dt>  
+		<dd class="validate-source">
+			<% if (source){ %> 
+				<span class="fonticon-circle-check green">YES</span> 
+			<% } else {%> 
+				<span class="fonticon-x red">NO</span>
+			<% } %>
+		</dd>
+
+		<% if (!model.isURL("source")){ %>
+			<dt>Is your source a full url?</dt>
+			<dd class="validate-target">
+					<span class="fonticon-x red"></span>
+					When passing in source and target the reference must be a full URL.  e.g:  <code>http://username.cloudant.com/dbname</code>
+			</dd>
+		<% } %>
+
+		<dt>Does your replication have a Target?</dt>
+		<dd class="validate-target">
+			<% if (target){ %> 
+				<span class="fonticon-circle-check green">YES</span> 
+			<% } else {%> 
+				<span class="fonticon-x red">NO</span>
+			<% } %>
+		</dd>
+
+
+
+		<% if (!model.isURL("target")){ %>
+			<dt>Is your target a full url?</dt>
+			<dd class="validate-target">
+					<span class="fonticon-x red"></span>
+					When passing in source and target the reference must be a full URL.  e.g:  <code>http://username.cloudant.com/dbname</code>
+			</dd>
+		<% } %>
+
+		<% if (!typeof model.get("create_target") === "boolean"){ %>
+			<dt>Create_target primitive type...</dt>
+			<dd class="validate-target">
+					<span class="fonticon-x red">Not boolean</span>
+					Suggestion: <code>"create_target": true</code> must be a boolean (true || false)
+			</dd>
+		<% } %>
+
+		<% if (!typeof model.get("continuous") === "boolean"){ %>
+			<dt>Continuous primitive type...</dt>
+			<dd class="validate-target">
+					<span class="fonticon-x red">Not boolean</span>
+					Suggestion: <code>"continuous": true</code> must be a boolean (true || false)
+			</dd>
+		<% } %>
+
+		<dt>Does your replication have a user_ctx?</dt>
+		<dd class="validate-user">
+			<% if (user_ctx){ %> 
+				<span class="fonticon-circle-check green">YES</span> 
+			<% } else {%> 
+				<span class="fonticon-x red">NO</span>
+				The user_ctx property is mandatory for cloudant. It is provided by default when submitting a replication in the client. 
+				Example: 
+				<pre>
+				{
+				  "_id": "my_rep",
+				  "source":  "http://bserver.com:5984/foo",
+				  "target":  "bar",
+				  "continuous":  true,
+				  "user_ctx": {
+				      "name": "joe",
+				      "roles": ["erlanger", "researcher"]
+				  }
+				}
+				</pre>
+			<% } %>
+		</dd>
+
+	</dl>
+
+	<p>If everything passed, here are additional things to check: </p>
+	<dl class="dl-horizontal replication-validator">
+		<dt>Have you authenticated?</dt>
+		<dd><p>In order to access target and source databases, you must authenticate with the proper username &amp; password.  You can authenticate in the database url, e.g. <code>http://username:password@username.cloudant.com/foo</code></p>
+
+
+		<p>Or when posting to _replicator, include headers if you wish to encrypt your passwords. </p>
+<pre>
+{
+	//...
+	source: {
+		url: "http://username.cloudant.com/foo",
+		headers: {
+			"Authorization": "BASIC dXNlcm5hbWU6cGFzc3dvcmQ="
+		}
+	}
+}
+</pre>
+		</dd>
+
+		<dt>Make sure remote databases exist: </dt>
+		<dd>Replicating from a database that isn't hosted under this account? Make sure that the database exists.</dd>
+
+
+
+	</dl>
+
+
+
+</td>

@@ -8,6 +8,7 @@
   { "name": "config" },
   { "name": "logs" },
   { "name": "stats" },
+  { "name": "replicator" },
   { "name": "replication" },
   { "name": "plugins" },
   { "name": "contribute" },

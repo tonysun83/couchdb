@@ -1,0 +1,71 @@
+<!--
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+<form id="replication" class="form-horizontal">
+	<div class="control-group" id="step4">
+		<label class="control-label">_id <br>
+			<small>(optional)</small>
+		</label>
+		<div class="source controls">
+			<input type="text" id="repID" name="_id" size="30" value="" data-validation="optional" placeholder="e.g. my_rep">
+		</div>
+	</div>
+	<!-- SOURCE -->
+	<div class="control-group" >
+		<label class="control-label">SOURCE DATABASE:</label>
+		<div class="source controls">
+			<div id="source_form"></div>
+		</div>
+
+	</div>
+
+	<div class="control-group">
+		<label class="control-label">TARGET DATABASE:</label>
+		<div class="target controls">
+			<div class="btn-group toggle-btns" id="create_target">
+
+				<label for="existing-target" class="btn active">
+					Existing Database  
+				</label>
+				
+				<label for="new-target" class="btn">
+					New Database
+				</label>
+
+				<input type="radio" id="existing-target" name="create_target" class="next" checked="checked" value="false">
+				<input type="radio" id="new-target" name="create_target" class="next" value="true">
+	
+			</div>
+		</div>
+	</div>
+
+	<!--TARGET-->
+	<div class="control-group">
+		<div class="target controls">
+			<div id="target_form"></div>
+			<label for="continuous">
+				<input type="checkbox" name="continuous" value="true" id="continuous">
+				Make this replication continuous.
+			</label>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="actions target controls">
+			<button class="button green save btn-large fonticon-replicate" type="submit" >Replicate</button>
+		</div>
+	</div>
+
+</form>
+
+<div class="password_modal"></div>
