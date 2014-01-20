@@ -24,7 +24,9 @@ define([
        "resizeColumns",
 
        // Plugins
-       "plugins/prettify"
+       "plugins/prettify",
+       "plugins/beautify",
+
 
 ],
 
@@ -1246,7 +1248,8 @@ function(app, FauxtonAPI, Components, Documents, Databases, pouchdb, resizeColum
       "click button.delete": "deleteView",
       "change select#reduce-function-selector": "updateReduce",
       "click button.preview": "previewView",
-      "click #db-views-tabs-nav": 'toggleIndexNav'
+      "click #db-views-tabs-nav": 'toggleIndexNav',
+      "click .beautify":  "beautifyCode"
     },
 
     langTemplates: {
@@ -1660,8 +1663,15 @@ function(app, FauxtonAPI, Components, Documents, Databases, pouchdb, resizeColum
 
       this.mapEditor.editSaved();
       this.reduceEditor && this.reduceEditor.editSaved();
-    },
 
+      if (this.mapEditor.getLines() === 1){
+        this.$('.beautify').removeClass("hidden");
+      }
+    },
+    beautifyCode: function(){
+      var beautifiedCode = js_beautify(this.mapEditor.getValue());
+      this.mapEditor.setValue(beautifiedCode);
+    },
     cleanup: function () {
       this.mapEditor && this.mapEditor.remove();
       this.reduceEditor && this.reduceEditor.remove();
