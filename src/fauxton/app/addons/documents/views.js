@@ -24,13 +24,13 @@ define([
        "resizeColumns",
 
        // Plugins
-       "plugins/prettify",
        "plugins/beautify",
+       "plugins/prettify",
 
 
 ],
 
-function(app, FauxtonAPI, Components, Documents, Databases, pouchdb, resizeColumns) {
+function(app, FauxtonAPI, Components, Documents, Databases, pouchdb, resizeColumns, beautify) {
   var Views = {};
   Views.Tabs = FauxtonAPI.View.extend({
     template: "addons/documents/templates/tabs",
@@ -1669,7 +1669,7 @@ function(app, FauxtonAPI, Components, Documents, Databases, pouchdb, resizeColum
       }
     },
     beautifyCode: function(){
-      var beautifiedCode = js_beautify(this.mapEditor.getValue());
+      var beautifiedCode = beautify(this.mapEditor.getValue());
       this.mapEditor.setValue(beautifiedCode);
     },
     cleanup: function () {
