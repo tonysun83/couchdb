@@ -1249,7 +1249,8 @@ function(app, FauxtonAPI, Components, Documents, Databases, pouchdb, resizeColum
       "change select#reduce-function-selector": "updateReduce",
       "click button.preview": "previewView",
       "click #db-views-tabs-nav": 'toggleIndexNav',
-      "click .beautify":  "beautifyCode"
+      "click .beautify_map":  "beautifyCode",
+      "click .beautify_reduce":  "beautifyCode"
     },
 
     langTemplates: {
@@ -1591,6 +1592,11 @@ function(app, FauxtonAPI, Components, Documents, Databases, pouchdb, resizeColum
         couchJSHINT: true
       });
       this.reduceEditor.render();
+
+      if (this.reduceEditor.getLines() === 1){
+        this.$('.beautify_reduce').removeClass("hidden");
+        $('.beautify-tooltip').tooltip();
+      }
     },
 
     beforeRender: function () {
@@ -1639,6 +1645,8 @@ function(app, FauxtonAPI, Components, Documents, Databases, pouchdb, resizeColum
         this.$('#index').hide();
         this.$('#index-nav').parent().removeClass('active');
       }
+
+
     },
 
     showEditors: function () {
@@ -1665,12 +1673,15 @@ function(app, FauxtonAPI, Components, Documents, Databases, pouchdb, resizeColum
       this.reduceEditor && this.reduceEditor.editSaved();
 
       if (this.mapEditor.getLines() === 1){
-        this.$('.beautify').removeClass("hidden");
+        this.$('.beautify_map').removeClass("hidden");
+        $('.beautify-tooltip').tooltip();
       }
     },
-    beautifyCode: function(){
-      var beautifiedCode = beautify(this.mapEditor.getValue());
-      this.mapEditor.setValue(beautifiedCode);
+    beautifyCode: function(e){
+      e.preventDefault();
+      var targetEditor = $(e.currentTarget).hasClass('beautify_reduce')?this.reduceEditor:this.mapEditor;
+      var beautifiedCode = beautify(targetEditor.getValue());
+      targetEditor.setValue(beautifiedCode);
     },
     cleanup: function () {
       this.mapEditor && this.mapEditor.remove();
