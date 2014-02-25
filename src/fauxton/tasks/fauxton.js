@@ -75,6 +75,24 @@ module.exports = function(grunt) {
 
   });
 
+
+  grunt.registerMultiTask('gen_brand_imports', 'Generate the branding.less file imports for site branding and setting variables', function() {
+    var path = require('path');
+        data = this.data,
+        _ = grunt.util._,
+        settingsFile = path.existsSync(data.src) ? data.src : "settings.json.default",
+        settings = grunt.file.readJSON(settingsFile),
+        template = "assets/less/branding.less.underscore",
+        dest = "assets/less/branding.less",
+        less = settings.branding;
+
+    var tmpl = _.template(grunt.file.read(template));
+    grunt.file.write(dest, tmpl({less: less}));
+  });
+
+
+
+
   grunt.registerMultiTask('gen_load_addons', 'Generate the load_addons.js file', function() {
     var path = require('path');
         data = this.data,

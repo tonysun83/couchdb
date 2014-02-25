@@ -56,6 +56,7 @@ module.exports = function(grunt) {
   }();
 
   var assets = function(){
+
     // Base assets
     var theAssets = {
       less:{
@@ -342,7 +343,11 @@ module.exports = function(grunt) {
         src: "settings.json"
       }
     },
-
+    gen_brand_imports: {
+      "default": {
+        src: "settings.json"
+      }
+    },
     gen_load_addons: {
       "default": {
         src: "settings.json"
@@ -430,7 +435,7 @@ module.exports = function(grunt) {
   // lighter weight test task for use inside dev/watch
   grunt.registerTask('test_inline', ['mochaSetup','jst', 'concat:test_config_js','mocha_phantomjs']);
   // Fetch dependencies (from git or local dir), lint them and make load_addons
-  grunt.registerTask('dependencies', ['get_deps', 'gen_load_addons:default']);
+  grunt.registerTask('dependencies', ['get_deps', 'gen_load_addons:default', 'gen_brand_imports:default']);
   // build templates, js and css
   grunt.registerTask('build', ['less', 'concat:index_css', 'jst', 'requirejs', 'concat:requirejs', 'template:release']);
   // minify code and css, ready for release.

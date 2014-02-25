@@ -1,0 +1,12 @@
+/*
+ * ::WARNING::
+ * THIS IS A GENERATED FILE. DO NOT EDIT.
+ */
+
+<% if (less.variables){ %> 
+@import "<%=less.variables%>";
+<% }%>
+
+<% if (less.branding){ %> 
+@import "<%=less.branding%>";
+<% }%>
