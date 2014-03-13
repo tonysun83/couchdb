@@ -10,22 +10,22 @@
 ## License for the specific language governing permissions and limitations under
 ## the License.
 
-snappyebindir = $(localerlanglibdir)/snappy-1.1.0/ebin
-snappyprivdir = $(localerlanglibdir)/snappy-1.1.0/priv
+snappyebindir = $(localerlanglibdir)/snappy-1.1.1/ebin
+snappyprivdir = $(localerlanglibdir)/snappy-1.1.1/priv
 
 snappy_cxx_srcs = \
 	snappy_nif.cc \
-	google-snappy/snappy.cc \
-	google-snappy/snappy-sinksource.cc \
-	google-snappy/snappy-stubs-internal.cc
+	c_src/snappy/snappy.cc \
+	c_src/snappy/snappy-sinksource.cc \
+	c_src/snappy/snappy-stubs-internal.cc
 
 snappy_cxx_hdrs = \
-	erl_nif_compat.h \
-	google-snappy/snappy.h \
-	google-snappy/snappy-internal.h \
-	google-snappy/snappy-sinksource.h \
-	google-snappy/snappy-stubs-internal.h \
-	google-snappy/snappy-stubs-public.h.in
+	c_src/erl_nif_compat.h \
+	c_src/snappy/snappy.h \
+	c_src/snappy/snappy-internal.h \
+	c_src/snappy/snappy-sinksource.h \
+	c_src/snappy/snappy-stubs-internal.h \
+	c_src/snappy/snappy-stubs-public.h.in
 
 snappy_file_collection = \
     snappy.app.in \
@@ -36,14 +36,14 @@ snappyebin_make_generated_file_list = \
     snappy.beam
 
 EXTRA_DIST = \
-    google-snappy/AUTHORS \
-    google-snappy/COPYING \
-	$(snappy_cxx_hdrs) \
+    c_src/snappy/AUTHORS \
+    c_src/snappy/COPYING \
+    $(snappy_cxx_hdrs) \
     $(snappy_file_collection)
 
 CLEANFILES = \
     $(snappyebin_make_generated_file_list) \
-	priv/snappy_nif.so
+    priv/snappy_nif.so
 
 snappyebin_DATA = \
     $(snappyebin_make_generated_file_list)

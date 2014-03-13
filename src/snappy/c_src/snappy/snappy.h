@@ -56,13 +56,6 @@ namespace snappy {
   // number of bytes written.
   size_t Compress(Source* source, Sink* sink);
 
-  // Find the uncompressed length of the given stream, as given by the header.
-  // Note that the true length could deviate from this; the stream could e.g.
-  // be truncated.
-  //
-  // Also note that this leaves "*source" in a state that is unsuitable for
-  // further operations, such as RawUncompress(). You will need to rewind
-  // or recreate the source yourself before attempting any further calls.
   bool GetUncompressedLength(Source* source, uint32* result);
 
   // ------------------------------------------------------------------------
@@ -142,20 +135,19 @@ namespace snappy {
   bool IsValidCompressedBuffer(const char* compressed,
                                size_t compressed_length);
 
-  // The size of a compression block. Note that many parts of the compression
-  // code assumes that kBlockSize <= 65536; in particular, the hash table
-  // can only store 16-bit offsets, and EmitCopy() also assumes the offset
-  // is 65535 bytes or less. Note also that if you change this, it will
-  // affect the framing format (see framing_format.txt).
+  // *** DO NOT CHANGE THE VALUE OF kBlockSize ***
   //
-  // Note that there might be older data around that is compressed with larger
-  // block sizes, so the decompression code should not rely on the
-  // non-existence of long backreferences.
-  static const int kBlockLog = 16;
-  static const size_t kBlockSize = 1 << kBlockLog;
+  // New Compression code chops up the input into blocks of at most
+  // the following size.  This ensures that back-references in the
+  // output never cross kBlockSize block boundaries.  This can be
+  // helpful in implementing blocked decompression.  However the
+  // decompression code should not rely on this guarantee since older
+  // compression code may not obey it.
+  static const int kBlockLog = 15;
+  static const int kBlockSize = 1 << kBlockLog;
 
   static const int kMaxHashTableBits = 14;
-  static const size_t kMaxHashTableSize = 1 << kMaxHashTableBits;
+  static const int kMaxHashTableSize = 1 << kMaxHashTableBits;
 
 }  // end namespace snappy
 
