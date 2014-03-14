@@ -85,7 +85,7 @@ function(app, FauxtonAPI, Config, Components) {
     template: "addons/config/templates/dashboard",
 
     events: {
-      "click #add-section": "addSection"
+      "click #js-add-section": "addSection"
     },
 
     initialize: function(){
@@ -127,7 +127,7 @@ function(app, FauxtonAPI, Config, Components) {
     className: "modal hide fade",
     template:  "addons/config/templates/modal",
     events: {
-      "submit #add-section-form": "validate"
+      "submit #js-add-section-form": "validate"
     },
     initialize: function(){
       this.sourceArray = _.map(this.collection.toJSON(), function(item, key){ 
@@ -203,14 +203,14 @@ function(app, FauxtonAPI, Config, Components) {
           msg: msg,
           type: "error",
           clear: true,
-          selector: ".form-error-config"
+          selector: ".js-form-error-config"
       });
     },
     show: function(){
-      $(this.el).modal({show:true});
+      this.$el.modal({show:true});
     },
     hide: function(){
-      $(this.el).modal('hide');
+      this.$el.modal('hide');
     }
 
   });
