@@ -21,6 +21,7 @@
 -export([code_change/3, terminate/2]).
 
 -include("couch_db.hrl").
+-include_lib("kernel/include/file.hrl").
 
 -define(CONFIG_ETS, couch_compaction_daemon_config).
 
@@ -495,6 +496,16 @@ free_space_rec(Path, [{MountPoint0, Total, Usage} | Rest]) ->
     end.
 
 abs_path(Path0) ->
+    {ok, Info} = file:read_link_info(Path0),
+    case Info#file_info.type of
+        symlink ->
+            {ok, Path} = file:read_link(Path0),
+            abs_path(Path);
+        _ ->
+            abs_path2(Path0)
+    end.
+
+abs_path2(Path0) ->
     Path = filename:absname(Path0),
     case lists:last(Path) of
     $/ ->
