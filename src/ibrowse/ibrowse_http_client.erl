@@ -587,7 +587,11 @@ do_send_body(Body, State, _TE) ->
 generate_body({Source, Source_state} = In) when is_function(Source) ->
     case Source(Source_state) of
         {ok, Data, Source_state_1} ->
-            {{ok, Data}, {Source, Source_state_1}};
+            {{ok, Data, Source_state_1}, Source};
+        {eof, Source_state_1} ->
+            {{eof, Source_state_1}, Source};
+        eof ->
+            {eof, Source};
         Ret ->
             {Ret, In}
     end;
@@ -618,6 +622,16 @@ do_send_body_1({Resp, Source}, State, TE, Acc) when is_function(Source) ->
                             [Data | Acc]
                     end,
             do_send_body_1(generate_body({Source, New_source_state}), State, TE, Acc_1);
+        {eof, _New_source_state} ->
+            case TE of
+                true ->
+                    ok = do_send(<<"0\r\n\r\n">>, State),
+                    {ok, []};
+                _ ->
+                    Body = list_to_binary(lists:reverse(Acc)),
+                    ok = do_send(Body, State),
+                    {ok, Body}
+            end;
         eof when TE == true ->
             ok = do_send(<<"0\r\n\r\n">>, State),
             {ok, []};
@@ -924,7 +938,7 @@ make_request(Method, Headers, AbsPath, RelPath, Body, Options,
     HttpVsn = http_vsn_string(get_value(http_vsn, Options, {1,1})),
     Fun1 = fun({X, Y}) when is_atom(X) ->
                    {to_lower(atom_to_list(X)), X, Y};
-              ({X, Y}) when is_list(X) ->
+              ({X, Y}) when is_list(X); is_binary(X) ->
                    {to_lower(X), X, Y}
            end,
     Headers_0 = [Fun1(X) || X <- Headers],
@@ -1010,7 +1024,7 @@ encode_headers(L) ->
     encode_headers(L, []).
 encode_headers([{http_vsn, _Val} | T], Acc) ->
     encode_headers(T, Acc);
-encode_headers([{Name,Val} | T], Acc) when is_list(Name) ->
+encode_headers([{Name,Val} | T], Acc) when is_list(Name); is_binary(Name) ->
     encode_headers(T, [[Name, ": ", fmt_val(Val), crnl()] | Acc]);
 encode_headers([{Name,Val} | T], Acc) when is_atom(Name) ->
     encode_headers(T, [[atom_to_list(Name), ": ", fmt_val(Val), crnl()] | Acc]);
@@ -1072,7 +1086,7 @@ parse_response(Data, #state{reply_buffer = Acc, reqs = Reqs,
             {HttpVsn, StatCode, Headers_1, Status_line, Raw_headers} = parse_headers(Headers),
             do_trace("HttpVsn: ~p StatusCode: ~p Headers_1 -> ~1000.p~n", [HttpVsn, StatCode, Headers_1]),
             LCHeaders = [{to_lower(X), Y} || {X,Y} <- Headers_1],
-            ConnClose = to_lower(get_value("connection", LCHeaders, "false")),
+            ConnClose = to_lower(get_header_value("connection", LCHeaders, "false")),
             IsClosing = is_connection_closing(HttpVsn, ConnClose),
             State_0 = case IsClosing of
                           true ->
@@ -1096,11 +1110,11 @@ parse_response(Data, #state{reply_buffer = Acc, reqs = Reqs,
                                             http_status_code=StatCode}
                       end,
             put(conn_close, ConnClose),
-            TransferEncodings = to_lower(get_value("transfer-encoding", LCHeaders, "false")),
+            TransferEncodings = to_lower(get_header_value("transfer-encoding", LCHeaders, "false")),
             IsChunked = lists:any(fun(Enc) -> string:strip(Enc) =:= "chunked" end,
                                   string:tokens(TransferEncodings, ",")),
             Head_response_with_body = lists:member({workaround, head_response_with_body}, Options),
-            case get_value("content-length", LCHeaders, undefined) of
+            case get_header_value("content-length", LCHeaders, undefined) of
                 _ when Method == connect,
                        hd(StatCode) == $2 ->
                     {_, Reqs_1} = queue:out(Reqs),
@@ -1181,12 +1195,12 @@ parse_response(Data, #state{reply_buffer = Acc, reqs = Reqs,
                     %% Some servers send 303 requests without a body.
                     %% RFC2616 says that they SHOULD, but they dont.
                     case ibrowse:get_config_value(allow_303_with_no_body, false) of
-                      false -> 
+                      false ->
                         fail_pipelined_requests(State_1,
                                             {error, {content_length_undefined,
                                                      {stat_code, StatCode}, Headers}}),
                        {error, content_length_undefined};
-                      true -> 
+                      true ->
                         {_, Reqs_1} = queue:out(Reqs),
                         send_async_headers(ReqId, StreamTo, Give_raw_headers, State_1),
                         State_1_1 = do_reply(State_1, From, StreamTo, ReqId, Resp_format,
@@ -1906,6 +1920,8 @@ cancel_timer(Ref, {eat_message, Msg}) ->
 make_req_id() ->
     now().
 
+to_lower(Str) when is_binary(Str) ->
+    to_lower(binary_to_list(Str));
 to_lower(Str) ->
     to_lower(Str, []).
 to_lower([H|T], Acc) when H >= $A, H =< $Z ->
@@ -2021,3 +2037,13 @@ to_binary({X, _}) when is_function(X) -> to_binary(X);
 to_binary(X) when is_function(X)      -> <<"body generated by function">>;
 to_binary(X) when is_list(X)          -> list_to_binary(X);
 to_binary(X) when is_binary(X)        -> X.
+
+get_header_value(Name, Headers, Default_val) ->
+    case lists:keysearch(Name, 1, Headers) of
+        false ->
+            Default_val;
+        {value, {_, Val}} when is_binary(Val) ->
+            binary_to_list(Val);
+        {value, {_, Val}} ->
+            Val
+    end.
