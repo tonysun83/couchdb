@@ -18,7 +18,7 @@ the License.
 
   <div class="btn-group toggle-btns">
     <label for="showKeys" class="drop-down btn active">
-     Specific Keys 
+     Specific Key(s)
     </label>
     <label for="showStartEnd" class="drop-down btn">
       Bounded Queries
@@ -28,16 +28,19 @@ the License.
   <div class="controls-group well">
     <div class="row-fluid" id="js-showKeys">
       <div class="controls controls-row">
-        <textarea id="keys-input" name="keys" class="input-xxlarge" rows="5" type="text" placeholder="Enter a key, an array of keys. This must be valid JSON."></textarea>
+        <label for="keys-input" class="drop-down">A key, or an array of keys.</label>
+        <textarea id="keys-input" name="keys" class="input-xxlarge" rows="5" type="text" placeholder='Enter valid JSON; e.g., ["1234"] or ["1234","2345"]'></textarea>
         <div id="keys-error" class="inline-block js-keys-error"></div>
       </div>
     </div>
     <div class="row-fluid hide" id="js-showStartEnd">
       <div class="controls controls-row">
-        <input name="startkey" class="span6" type="text" placeholder="Start Key" disabled>
-        <input name="endkey" class="span6" type="text" placeholder="End Key">
+        <label for="startkey" class="drop-down">Start key</label>
+        <input name="startkey" id="startkey" class="span6" type="text" placeholder='e.g., "1234"' disabled>
+        <label for="endkey" class="drop-down">End key</label>
+        <input id="endkey" name="endkey" class="span6" type="text" placeholder='e.g., "1234"'>
       </div>
-      <div class="controls controls-row checkbox inline">  
+      <div class="controls controls-row checkbox inline">
         <input id="check5" name="inclusive_end" type="checkbox" value="false" disabled>
         <label for="check5">Disable Inclusive End</label>
       </div>
@@ -61,20 +64,20 @@ the License.
         </select>
       </label>
       <label for="skipRows" class="inline drop-down">
-        Skip: 
-        <input name="skip" class="input-large" type="text" id="skipRows" placeholder="Number of rows to skip">
+        # of rows to skip"
+        <input name="skip" class="input-small" type="text" id="skipRows">
       </label>
 
-      <div class="checkbox inline"> 
-        <input id="check1" type="checkbox" name="include_docs" value="true">  
-        <label name="include_docs" for="check1">Include Docs (show the entire doc body)</label>  
+      <div class="checkbox inline">
+        <input id="check1" type="checkbox" name="include_docs" value="true">
+        <label name="include_docs" for="check1">Include Docs (show the entire doc body)</label>
       </div>
 
       <% if (hasReduce) { %>
-      <div class="checkbox inline">  
+      <div class="checkbox inline">
         <input id="check2" name="reduce" type="checkbox" value="true">
-        <label for="check2">Reduce</label>  
-      </div> 
+        <label for="check2">Reduce</label>
+      </div>
       <label id="select1" class="drop-down inline">
         Group Level:
         <select id="select1" disabled name="group_level" class="input-small">
@@ -88,28 +91,28 @@ the License.
           <option value="7">7</option>
           <option value="8">8</option>
           <option value="9">9</option>
-          <option value="999" selected="selected">exact</option>
+          <option value="999" selected="selected">Exact</option>
         </select>
       </label>
       <% } %>
 
       <label id="select2" class="drop-down inline">
-        Order: 
+        Order:
         <select id="select2" name="descending" class="input-large">
-          <option value="false">Accending</option>
+          <option value="false">Ascending</option>
           <option value="true">Descending</option>
         </select>
       </label>
 
-      <div class="checkbox inline">  
-        <input id="check6" name="update_seq" type="checkbox" value="true">  
-        <label for="check6">Update Sequence</label>  
+      <div class="checkbox inline">
+        <input id="check6" name="update_seq" type="checkbox" value="true">
+        <label for="check6">Update Sequence</label>
       </div>
 
       <% if (showPreview) { %>
-      <div class="checkbox inline">  
-        <input id="check7" name="stale" type="checkbox" value="true">  
-        <label for="check7">Stale</label>  
+      <div class="checkbox inline">
+        <input id="check7" name="stale" type="checkbox" value="true">
+        <label for="check7">Stale</label>
       </div>
       <% } %>
   </div>
