@@ -1136,13 +1136,13 @@ function(app, FauxtonAPI, Components, Documents, Databases, pouchdb,
       for (var i= 0; i <params.length; i++){
         if (params[i].name === "skip"){
           if (!(/^\d+$/).test(params[i].value)){
-            var notification = FauxtonAPI.addNotification({
+            FauxtonAPI.addNotification({
               msg: "Numbers only for skip",
               type: "warn",
               selector: ".advanced-options .errors-container",
               clear:  true
             });
-            errors = true
+            errors = true;
           }
         }
       }
@@ -1226,12 +1226,12 @@ function(app, FauxtonAPI, Components, Documents, Databases, pouchdb,
         break;
         case "skip":
           if (!(/^\d+$/).test($ele.val())){
-            var notification = FauxtonAPI.addNotification({
-                msg: "Numbers only for skip",
-                type: "warn",
-                selector: ".advanced-options .errors-container",
-                clear:  true
-              });
+            FauxtonAPI.addNotification({
+              msg: "Numbers only for skip",
+              type: "warn",
+              selector: ".advanced-options .errors-container",
+              clear:  true
+            });
           }
         break;
         case "include_docs":
