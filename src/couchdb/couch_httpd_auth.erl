@@ -367,7 +367,9 @@ authenticate(Pass, UserProps) ->
             {couch_passwords:simple(Pass, UserSalt),
             couch_util:get_value(<<"password_sha">>, UserProps, nil)};
         <<"pbkdf2">> ->
-            Iterations = couch_util:get_value(<<"iterations">>, UserProps, 10000),
+            Iterations = couch_util:to_integer(
+                    couch_util:get_value(<<"iterations">>, UserProps, 10000)
+            ),
             {couch_passwords:pbkdf2(Pass, UserSalt, Iterations),
              couch_util:get_value(<<"derived_key">>, UserProps, nil)}
     end,
