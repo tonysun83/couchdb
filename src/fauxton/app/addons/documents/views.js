@@ -1059,16 +1059,21 @@ function(app, FauxtonAPI, Components, Documents, Databases, pouchdb,
 
     toggleQuery: function(e){
       e.preventDefault();
-      this.$('.js-query-keys-wrapper').removeClass("hide");
-      var showFunctionName =this.$(e.currentTarget).attr("for");
-      //highlight current
-      this.$(".toggle-btns > label").removeClass('active');
-      this.$(e.currentTarget).addClass("active");
 
-      this.$("[id^='js-show']").hide();
-
-      //show section & disable what needs to be disabled
-      this[showFunctionName]();
+      if (this.$(e.currentTarget).hasClass("active")){
+        this.$('.js-query-keys-wrapper').addClass("hide");
+        this.$(".toggle-btns > label").removeClass('active');
+        this.$('.js-query-keys-wrapper').find("input,textarea").attr("disabled","true");
+      } else {
+        this.$('.js-query-keys-wrapper').removeClass("hide");
+        var showFunctionName =this.$(e.currentTarget).attr("for");
+        //highlight current
+        this.$(".toggle-btns > label").removeClass('active');
+        this.$(e.currentTarget).addClass("active");
+        this.$("[id^='js-show']").hide();
+        //show section & disable what needs to be disabled
+        this[showFunctionName]();
+      }
     },
 
     showKeys: function(){
