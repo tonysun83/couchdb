@@ -40,9 +40,9 @@ Protocol`.
 The secondary goal is to provide detailed enough information about the protocol
 to make it easy to build tools that can synchronize data with CouchDB.
 
-In theory the `CouchDB Replication Protocol` can be used between all products that
-implement it. However, the reference implementation, written in Erlang_, is
-provided by the couch_replicator_ module in Apache CouchDB.
+In theory the `CouchDB Replication Protocol` can be used between all products
+that implement it. However, the reference implementation, written in Erlang_,
+is provided by the couch_replicator_ module in Apache CouchDB.
 
 
 Definitions
@@ -66,8 +66,8 @@ Revision:
     Don't confuse it with the revision in version control systems!
 
 Leaf Revision:
-    The last Document Revision in a series of changes. Documents may have multiple
-    Leaf Revisions (aka Conflict Revisions) due to concurrent updates.
+    The last Document Revision in a series of changes. Documents may have
+    multiple Leaf Revisions (aka Conflict Revisions) due to concurrent updates.
 
 Document:
     A document is a JSON object with a unique ID and Revision.
@@ -107,7 +107,8 @@ Filter Function Name:
     the related Filter Function to Replication.
 
 Filtered Replication:
-    Replication of Documents from Source to Target that passes a Filter Function.
+    Replication of Documents from Source to Target that passes
+    a Filter Function.
 
 Full Replication:
     Replication of all Documents from Source to Target.
@@ -121,7 +122,8 @@ Pull Replication:
 Continuous Replication:
     Replication that "never stops": after processing all events from
     Changes Feed, Replicator doesn't close the connection, but awaits new change
-    events from the Source. The connection is kept alive by periodical heartbeats.
+    events from the Source. The connection is kept alive by periodical
+    heartbeats.
 
 Replication Log:
     A special Document that holds Replication history between Source and Target.
@@ -134,22 +136,23 @@ Replication Protocol Algorithm
 ==============================
 
 `CouchDB Replication Protocol` is a quite complex set of HTTP requests and
-business logic that is used to effectively transfer changes from Source to Target
-endpoint. To make things easy, this protocol definition contains a step-by-step
-description on how the Replication Protocol works, illustrated by ASCII flow charts
-and request/response examples.
+business logic that is used to effectively transfer changes from Source to
+Target endpoint. To make things easy, this protocol definition contains
+a step-by-step description on how the Replication Protocol works, illustrated
+by ASCII flow charts and request/response examples.
 
 .. note::
 
-  The `CouchDB Replication Protocol` is not something *magical*, but an agreement
-  on usage of the public :ref:`CouchDB HTTP API <api>` in specific way. So, in global
-  terms, a Replicator is just a CouchDB client application with some business logic
-  oriented towards synchronizing Documents between Source and Target.
+  The `CouchDB Replication Protocol` is not something *magical*, but
+  an agreement on usage of the public :ref:`CouchDB HTTP API <api>` in specific
+  way. So, in global terms, a Replicator is just a CouchDB client application
+  with some business logic oriented towards synchronizing Documents between
+  Source and Target.
 
-  In this Protocol Specification we'll try to describe all the important details,
-  but if you're not sure how some HTTP endpoint works, please consult with the
-  :ref:`CouchDB HTTP API <api>` reference for complete information about
-  request parameters and expected responses.
+  In this Protocol Specification we'll try to describe all the important
+  details, but if you're not sure how some HTTP endpoint works, please consult
+  with the :ref:`CouchDB HTTP API <api>` reference for complete information
+  about request parameters and expected responses.
 
 
 .. note::
@@ -165,9 +168,9 @@ and request/response examples.
     based on the `Flask`_ framework (his responses contains
     ``Server: Werkzeug`` header).
 
-  - ``User-Agent: CouchDB`` is used by the Replicator and clearly defines the side
-    that runs Replication - for this Protocol Specification, this is the CouchDB
-    instance itself.
+  - ``User-Agent: CouchDB`` is used by the Replicator and clearly defines
+    the side that runs Replication - for this Protocol Specification, this is
+    the CouchDB instance itself.
 
 .. _Flask: http://flask.pocoo.org/
 .. _custom Peer implementation: https://github.com/kxepal/replipy
@@ -276,8 +279,8 @@ response:
     Server: CouchDB (Erlang OTP)
 
     {
-        "error": "db_not_found",
-        "reason": "could not open source"
+      "error": "db_not_found",
+      "reason": "could not open source"
     }
 
 
@@ -305,7 +308,7 @@ request to create the Target:
     Server: Werkzeug
 
     {
-        "ok": true
+      "ok": true
     }
 
 
@@ -389,17 +392,17 @@ calculations.
     Server: CouchDB (Erlang OTP)
 
     {
-        "committed_update_seq": 61772,
-        "compact_running": false,
-        "data_size": 70781613961,
-        "db_name": "source",
-        "disk_format_version": 6,
-        "disk_size": 79132913799,
-        "doc_count": 41961,
-        "doc_del_count": 3807,
-        "instance_start_time": "1380901070238216",
-        "purge_seq": 0,
-        "update_seq": 61772
+      "committed_update_seq": 61772,
+      "compact_running": false,
+      "data_size": 70781613961,
+      "db_name": "source",
+      "disk_format_version": 6,
+      "disk_size": 79132913799,
+      "doc_count": 41961,
+      "doc_del_count": 3807,
+      "instance_start_time": "1380901070238216",
+      "purge_seq": 0,
+      "update_seq": 61772
     }
 
 
@@ -424,9 +427,9 @@ calculations.
     Server: Werkzeug
 
     {
-        "db_name": "target",
-        "instance_start_time": "1381218659871282",
-        "update_seq": 64
+      "db_name": "target",
+      "instance_start_time": "1381218659871282",
+      "update_seq": 64
     }
 
 
@@ -562,52 +565,52 @@ request:
     Server: CouchDB (Erlang OTP)
 
     {
-        "_id": "_local/b3e44b920ee2951cb2e123b63044427a",
-        "_rev": "0-8",
-        "history": [
-            {
-                "doc_write_failures": 0,
-                "docs_read": 2,
-                "docs_written": 2,
-                "end_last_seq": 5,
-                "end_time": "Thu, 10 Oct 2013 05:56:38 GMT",
-                "missing_checked": 2,
-                "missing_found": 2,
-                "recorded_seq": 5,
-                "session_id": "d5a34cbbdafa70e0db5cb57d02a6b955",
-                "start_last_seq": 3,
-                "start_time": "Thu, 10 Oct 2013 05:56:38 GMT"
-            },
-            {
-                "doc_write_failures": 0,
-                "docs_read": 1,
-                "docs_written": 1,
-                "end_last_seq": 3,
-                "end_time": "Thu, 10 Oct 2013 05:56:12 GMT",
-                "missing_checked": 1,
-                "missing_found": 1,
-                "recorded_seq": 3,
-                "session_id": "11a79cdae1719c362e9857cd1ddff09d",
-                "start_last_seq": 2,
-                "start_time": "Thu, 10 Oct 2013 05:56:12 GMT"
-            },
-            {
-                "doc_write_failures": 0,
-                "docs_read": 2,
-                "docs_written": 2,
-                "end_last_seq": 2,
-                "end_time": "Thu, 10 Oct 2013 05:56:04 GMT",
-                "missing_checked": 2,
-                "missing_found": 2,
-                "recorded_seq": 2,
-                "session_id": "77cdf93cde05f15fcb710f320c37c155",
-                "start_last_seq": 0,
-                "start_time": "Thu, 10 Oct 2013 05:56:04 GMT"
-            }
-        ],
-        "replication_id_version": 3,
-        "session_id": "d5a34cbbdafa70e0db5cb57d02a6b955",
-        "source_last_seq": 5
+      "_id": "_local/b3e44b920ee2951cb2e123b63044427a",
+      "_rev": "0-8",
+      "history": [
+        {
+          "doc_write_failures": 0,
+          "docs_read": 2,
+          "docs_written": 2,
+          "end_last_seq": 5,
+          "end_time": "Thu, 10 Oct 2013 05:56:38 GMT",
+          "missing_checked": 2,
+          "missing_found": 2,
+          "recorded_seq": 5,
+          "session_id": "d5a34cbbdafa70e0db5cb57d02a6b955",
+          "start_last_seq": 3,
+          "start_time": "Thu, 10 Oct 2013 05:56:38 GMT"
+        },
+        {
+          "doc_write_failures": 0,
+          "docs_read": 1,
+          "docs_written": 1,
+          "end_last_seq": 3,
+          "end_time": "Thu, 10 Oct 2013 05:56:12 GMT",
+          "missing_checked": 1,
+          "missing_found": 1,
+          "recorded_seq": 3,
+          "session_id": "11a79cdae1719c362e9857cd1ddff09d",
+          "start_last_seq": 2,
+          "start_time": "Thu, 10 Oct 2013 05:56:12 GMT"
+        },
+        {
+          "doc_write_failures": 0,
+          "docs_read": 2,
+          "docs_written": 2,
+          "end_last_seq": 2,
+          "end_time": "Thu, 10 Oct 2013 05:56:04 GMT",
+          "missing_checked": 2,
+          "missing_found": 2,
+          "recorded_seq": 2,
+          "session_id": "77cdf93cde05f15fcb710f320c37c155",
+          "start_last_seq": 0,
+          "start_time": "Thu, 10 Oct 2013 05:56:04 GMT"
+        }
+      ],
+      "replication_id_version": 3,
+      "session_id": "d5a34cbbdafa70e0db5cb57d02a6b955",
+      "source_last_seq": 5
     }
 
 
@@ -662,8 +665,8 @@ This requests also MAY fall with :statuscode:`404` response:
     Server: CouchDB (Erlang OTP)
 
     {
-        "error": "not_found",
-        "reason": "missing"
+      "error": "not_found",
+      "reason": "missing"
     }
 
 That's OK. This means that there is no information about current Replication
@@ -815,49 +818,49 @@ Note, that Changes Feed output format is different for :ref:`feed=normal
     Transfer-Encoding: chunked
 
     {
-        "last_seq": 65537,
-        "results": [
+      "last_seq": 65537,
+      "results": [
+        {
+          "changes": [
             {
-                "changes": [
-                    {
-                        "rev": "1-9ffdbc124b782a72522247623599f108"
-                    }
-                ],
-                "id": "doc_A",
-                "seq": 65532
-            },
-            {
-                "changes": [
-                    {
-                        "rev": "1-63bc95077a47da58d0ed02a24dd17a19"
-                    },
-                    {
-                        "rev": "1-70598ca5d2c740068eb08e542e33a9b4"
-                    }
-                ],
-                "id": "doc_B",
-                "seq": 65535
-            },
-            {
-                "changes": [
-                    {
-                        "rev": "1-846f74662063d35c80bb2d0d12a13f8f"
-                    }
-                ],
-                "id": "doc_C",
-                "seq": 65536
-            },
-            {
-                "changes": [
-                    {
-                        "rev": "2-17aea1aac0cbd7255793f1f05de334e5"
-                    }
-                ],
-                "deleted": true,
-                "id": "doc_Z",
-                "seq": 65537
+              "rev": "1-9ffdbc124b782a72522247623599f108"
             }
-        ]
+          ],
+          "id": "doc_A",
+          "seq": 65532
+        },
+        {
+          "changes": [
+            {
+              "rev": "1-63bc95077a47da58d0ed02a24dd17a19"
+            },
+            {
+              "rev": "1-70598ca5d2c740068eb08e542e33a9b4"
+            }
+          ],
+          "id": "doc_B",
+          "seq": 65535
+        },
+        {
+          "changes": [
+            {
+              "rev": "1-846f74662063d35c80bb2d0d12a13f8f"
+            }
+          ],
+          "id": "doc_C",
+          "seq": 65536
+        },
+        {
+          "changes": [
+            {
+              "rev": "2-17aea1aac0cbd7255793f1f05de334e5"
+            }
+          ],
+          "deleted": true,
+          "id": "doc_Z",
+          "seq": 65537
+        }
+      ]
     }
 
 
@@ -880,16 +883,16 @@ it to Target via :post:`/{db}/_revs_diff` request:
     User-Agent: CouchDB
 
     {
-        "baz": [
-            "2-7051cbe5c8faecd085a3fa619e6e6337"
-        ],
-        "foo": [
-            "3-6a540f3d701ac518d3b9733d673c5484"
-        ],
-        "bar": [
-            "1-d4e501ab47de6b2000fc8a02f84a0c77",
-            "1-967a00dff5e02add41819138abb3284d"
-        ]
+      "baz": [
+        "2-7051cbe5c8faecd085a3fa619e6e6337"
+      ],
+      "foo": [
+        "3-6a540f3d701ac518d3b9733d673c5484"
+      ],
+      "bar": [
+        "1-d4e501ab47de6b2000fc8a02f84a0c77",
+        "1-967a00dff5e02add41819138abb3284d"
+      ]
     }
 
   **Response**:
@@ -904,16 +907,16 @@ it to Target via :post:`/{db}/_revs_diff` request:
     Server: Werkzeug
 
     {
-        "baz": {
-            "missing": [
-                "2-7051cbe5c8faecd085a3fa619e6e6337"
-            ]
-        },
-        "bar": {
-            "missing": [
-                "1-d4e501ab47de6b2000fc8a02f84a0c77"
-            ]
-        }
+      "baz": {
+        "missing": [
+          "2-7051cbe5c8faecd085a3fa619e6e6337"
+        ]
+      },
+      "bar": {
+        "missing": [
+          "1-d4e501ab47de6b2000fc8a02f84a0c77"
+        ]
+      }
     }
 
 In response Replicator also receives Document ID -- Revisions mapping, but for
@@ -934,12 +937,12 @@ empty JSON object:
     User-Agent: CouchDB
 
     {
-        "foo": [
-            "3-6a540f3d701ac518d3b9733d673c5484"
-        ],
-        "bar": [
-            "1-967a00dff5e02add41819138abb3284d"
-        ]
+      "foo": [
+        "3-6a540f3d701ac518d3b9733d673c5484"
+      ],
+      "bar": [
+        "1-967a00dff5e02add41819138abb3284d"
+      ]
     }
 
   **Response**:
@@ -1124,21 +1127,21 @@ it as stream with lesser memory footprint.
     Content-Type: application/json
 
     {
-        "_id": "SpaghettiWithMeatballs",
-        "_rev": "1-917fa23",
-        "_revisions": {
-            "ids": [
-                "917fa23"
-            ],
-            "start": 1
-        },
-        "description": "An Italian-American dish that usually consists of spaghetti, tomato sauce and meatballs.",
-        "ingredients": [
-            "spaghetti",
-            "tomato sauce",
-            "meatballs"
+      "_id": "SpaghettiWithMeatballs",
+      "_rev": "1-917fa23",
+      "_revisions": {
+        "ids": [
+          "917fa23"
         ],
-        "name": "Spaghetti with meatballs"
+        "start": 1
+      },
+      "description": "An Italian-American dish that usually consists of spaghetti, tomato sauce and meatballs.",
+      "ingredients": [
+        "spaghetti",
+        "tomato sauce",
+        "meatballs"
+      ],
+      "name": "Spaghetti with meatballs"
     }
     --7b1596fc4940bc1be725ad67f11ec1c4
     Content-Type: multipart/related; boundary="a81a77b0ca68389dda3243a43ca946f2"
@@ -1147,38 +1150,38 @@ it as stream with lesser memory footprint.
     Content-Type: application/json
 
     {
-        "_attachments": {
-            "recipe.txt": {
-                "content_type": "text/plain",
-                "digest": "md5-R5CrCb6fX10Y46AqtNn0oQ==",
-                "follows": true,
-                "length": 87,
-                "revpos": 7
-            }
-        },
-        "_id": "SpaghettiWithMeatballs",
-        "_rev": "7-474f12e",
-        "_revisions": {
-            "ids": [
-                "474f12e",
-                "5949cfc",
-                "00ecbbc",
-                "fc997b6",
-                "3552c87",
-                "404838b",
-                "5defd9d",
-                "dc1e4be"
-            ],
-            "start": 7
-        },
-        "description": "An Italian-American dish that usually consists of spaghetti, tomato sauce and meatballs.",
-        "ingredients": [
-            "spaghetti",
-            "tomato sauce",
-            "meatballs",
-            "love"
+      "_attachments": {
+        "recipe.txt": {
+          "content_type": "text/plain",
+          "digest": "md5-R5CrCb6fX10Y46AqtNn0oQ==",
+          "follows": true,
+          "length": 87,
+          "revpos": 7
+        }
+      },
+      "_id": "SpaghettiWithMeatballs",
+      "_rev": "7-474f12e",
+      "_revisions": {
+        "ids": [
+          "474f12e",
+          "5949cfc",
+          "00ecbbc",
+          "fc997b6",
+          "3552c87",
+          "404838b",
+          "5defd9d",
+          "dc1e4be"
         ],
-        "name": "Spaghetti with meatballs"
+        "start": 7
+      },
+      "description": "An Italian-American dish that usually consists of spaghetti, tomato sauce and meatballs.",
+      "ingredients": [
+        "spaghetti",
+        "tomato sauce",
+        "meatballs",
+        "love"
+      ],
+      "name": "Spaghetti with meatballs"
     }
     --a81a77b0ca68389dda3243a43ca946f2
     Content-Disposition: attachment; filename="recipe.txt"
@@ -1253,52 +1256,52 @@ feature.
     X-Couch-Full-Commit: false
 
     {
-        "docs": [
-            {
-                "_id": "SpaghettiWithMeatballs",
-                "_rev": "1-917fa2381192822767f010b95b45325b",
-                "_revisions": {
-                    "ids": [
-                        "917fa2381192822767f010b95b45325b"
-                    ],
-                    "start": 1
-                },
-                "description": "An Italian-American dish that usually consists of spaghetti, tomato sauce and meatballs.",
-                "ingredients": [
-                    "spaghetti",
-                    "tomato sauce",
-                    "meatballs"
-                ],
-                "name": "Spaghetti with meatballs"
-            },
-            {
-                "_id": "LambStew",
-                "_rev": "1-34c318924a8f327223eed702ddfdc66d",
-                "_revisions": {
-                    "ids": [
-                        "34c318924a8f327223eed702ddfdc66d"
-                    ],
-                    "start": 1
-                },
-                "servings": 6,
-                "subtitle": "Delicious with scone topping",
-                "title": "Lamb Stew"
-            },
-            {
-                "_id": "FishStew",
-                "_rev": "1-9c65296036141e575d32ba9c034dd3ee",
-                "_revisions": {
-                    "ids": [
-                        "9c65296036141e575d32ba9c034dd3ee"
-                    ],
-                    "start": 1
-                },
-                "servings": 4,
-                "subtitle": "Delicious with fresh bread",
-                "title": "Fish Stew"
-            }
-        ],
-        "new_edits": false
+      "docs": [
+        {
+          "_id": "SpaghettiWithMeatballs",
+          "_rev": "1-917fa2381192822767f010b95b45325b",
+          "_revisions": {
+            "ids": [
+              "917fa2381192822767f010b95b45325b"
+            ],
+            "start": 1
+          },
+          "description": "An Italian-American dish that usually consists of spaghetti, tomato sauce and meatballs.",
+          "ingredients": [
+            "spaghetti",
+            "tomato sauce",
+            "meatballs"
+          ],
+          "name": "Spaghetti with meatballs"
+        },
+        {
+          "_id": "LambStew",
+          "_rev": "1-34c318924a8f327223eed702ddfdc66d",
+          "_revisions": {
+            "ids": [
+              "34c318924a8f327223eed702ddfdc66d"
+            ],
+            "start": 1
+          },
+          "servings": 6,
+          "subtitle": "Delicious with scone topping",
+          "title": "Lamb Stew"
+        },
+        {
+          "_id": "FishStew",
+          "_rev": "1-9c65296036141e575d32ba9c034dd3ee",
+          "_revisions": {
+            "ids": [
+              "9c65296036141e575d32ba9c034dd3ee"
+            ],
+            "start": 1
+          },
+          "servings": 4,
+          "subtitle": "Delicious with fresh bread",
+          "title": "Fish Stew"
+        }
+      ],
+      "new_edits": false
     }
 
 In response Target MUST return JSON array with list of Document update status.
@@ -1380,37 +1383,37 @@ any serialization overhead.
     Content-Type: application/json
 
     {
-        "_attachments": {
-            "recipe.txt": {
-                "content_type": "text/plain",
-                "digest": "md5-R5CrCb6fX10Y46AqtNn0oQ==",
-                "follows": true,
-                "length": 87,
-                "revpos": 7
-            }
-        },
-        "_id": "SpaghettiWithMeatballs",
-        "_rev": "7-474f12eb068c717243487a9505f6123b",
-        "_revisions": {
-            "ids": [
-                "474f12eb068c717243487a9505f6123b",
-                "5949cfcd437e3ee22d2d98a26d1a83bf",
-                "00ecbbc54e2a171156ec345b77dfdf59",
-                "fc997b62794a6268f2636a4a176efcd6",
-                "3552c87351aadc1e4bea2461a1e8113a",
-                "404838bc2862ce76c6ebed046f9eb542",
-                "5defd9d813628cea6e98196eb0ee8594"
-            ],
-            "start": 7
-        },
-        "description": "An Italian-American dish that usually consists of spaghetti, tomato sauce and meatballs.",
-        "ingredients": [
-            "spaghetti",
-            "tomato sauce",
-            "meatballs",
-            "love"
+      "_attachments": {
+        "recipe.txt": {
+          "content_type": "text/plain",
+          "digest": "md5-R5CrCb6fX10Y46AqtNn0oQ==",
+          "follows": true,
+          "length": 87,
+          "revpos": 7
+        }
+      },
+      "_id": "SpaghettiWithMeatballs",
+      "_rev": "7-474f12eb068c717243487a9505f6123b",
+      "_revisions": {
+        "ids": [
+          "474f12eb068c717243487a9505f6123b",
+          "5949cfcd437e3ee22d2d98a26d1a83bf",
+          "00ecbbc54e2a171156ec345b77dfdf59",
+          "fc997b62794a6268f2636a4a176efcd6",
+          "3552c87351aadc1e4bea2461a1e8113a",
+          "404838bc2862ce76c6ebed046f9eb542",
+          "5defd9d813628cea6e98196eb0ee8594"
         ],
-        "name": "Spaghetti with meatballs"
+        "start": 7
+      },
+      "description": "An Italian-American dish that usually consists of spaghetti, tomato sauce and meatballs.",
+      "ingredients": [
+        "spaghetti",
+        "tomato sauce",
+        "meatballs",
+        "love"
+      ],
+      "name": "Spaghetti with meatballs"
     }
     --2fa48cba80d0cdba7829931fe8acce9d
     Content-Disposition: attachment; filename="recipe.txt"
@@ -1440,9 +1443,9 @@ any serialization overhead.
     Server: Werkzeug
 
     {
-        "ok": true,
-        "id": "SpaghettiWithMeatballs",
-        "rev": "7-474f12eb068c717243487a9505f6123b"
+      "ok": true,
+      "id": "SpaghettiWithMeatballs",
+      "rev": "7-474f12eb068c717243487a9505f6123b"
     }
 
 
@@ -1462,8 +1465,8 @@ Target SHOULD response with :statuscode:`403`:
     Server: Werkzeug
 
     {
-        "error": "forbidden",
-        "reason": "sorry"
+      "error": "forbidden",
+      "reason": "sorry"
     }
 
 Replicator SHOULD NOT retry requests in case of :statuscode:`401`,
@@ -1504,8 +1507,8 @@ is lay down on disk or other *persistent* storage place. Target MUST return
     Server: Werkzeug
 
     {
-        "instance_start_time": "1381218659871282",
-        "ok": true
+      "instance_start_time": "1381218659871282",
+      "ok": true
     }
 
 
@@ -1531,32 +1534,32 @@ Replicator updates Replication Log on Source:
     User-Agent: CouchDB
 
     {
-        "_id": "_local/afa899a9e59589c3d4ce5668e3218aef",
-        "_rev": "0-1",
-        "_revisions": {
-            "ids": [
-                "31f36e40158e717fbe9842e227b389df"
-            ],
-            "start": 1
-        },
-        "history": [
-            {
-                "doc_write_failures": 0,
-                "docs_read": 6,
-                "docs_written": 6,
-                "end_last_seq": 26,
-                "end_time": "Thu, 07 Nov 2013 09:42:17 GMT",
-                "missing_checked": 6,
-                "missing_found": 6,
-                "recorded_seq": 26,
-                "session_id": "04bf15bf1d9fa8ac1abc67d0c3e04f07",
-                "start_last_seq": 0,
-                "start_time": "Thu, 07 Nov 2013 09:41:43 GMT"
-            }
+      "_id": "_local/afa899a9e59589c3d4ce5668e3218aef",
+      "_rev": "0-1",
+      "_revisions": {
+        "ids": [
+          "31f36e40158e717fbe9842e227b389df"
         ],
-        "replication_id_version": 3,
-        "session_id": "04bf15bf1d9fa8ac1abc67d0c3e04f07",
-        "source_last_seq": 26
+        "start": 1
+      },
+      "history": [
+        {
+          "doc_write_failures": 0,
+          "docs_read": 6,
+          "docs_written": 6,
+          "end_last_seq": 26,
+          "end_time": "Thu, 07 Nov 2013 09:42:17 GMT",
+          "missing_checked": 6,
+          "missing_found": 6,
+          "recorded_seq": 26,
+          "session_id": "04bf15bf1d9fa8ac1abc67d0c3e04f07",
+          "start_last_seq": 0,
+          "start_time": "Thu, 07 Nov 2013 09:41:43 GMT"
+        }
+      ],
+      "replication_id_version": 3,
+      "session_id": "04bf15bf1d9fa8ac1abc67d0c3e04f07",
+      "source_last_seq": 26
     }
 
 
@@ -1572,9 +1575,9 @@ Replicator updates Replication Log on Source:
     Server: CouchDB (Erlang/OTP)
 
     {
-        "id": "_local/afa899a9e59589c3d4ce5668e3218aef",
-        "ok": true,
-        "rev": "0-2"
+      "id": "_local/afa899a9e59589c3d4ce5668e3218aef",
+      "ok": true,
+      "rev": "0-2"
     }
 
 ...and on Target too:
@@ -1591,32 +1594,32 @@ Replicator updates Replication Log on Source:
     User-Agent: CouchDB
 
     {
-        "_id": "_local/afa899a9e59589c3d4ce5668e3218aef",
-        "_rev": "1-31f36e40158e717fbe9842e227b389df",
-        "_revisions": {
-            "ids": [
-                "31f36e40158e717fbe9842e227b389df"
-            ],
-            "start": 1
-        },
-        "history": [
-            {
-                "doc_write_failures": 0,
-                "docs_read": 6,
-                "docs_written": 6,
-                "end_last_seq": 26,
-                "end_time": "Thu, 07 Nov 2013 09:42:17 GMT",
-                "missing_checked": 6,
-                "missing_found": 6,
-                "recorded_seq": 26,
-                "session_id": "04bf15bf1d9fa8ac1abc67d0c3e04f07",
-                "start_last_seq": 0,
-                "start_time": "Thu, 07 Nov 2013 09:41:43 GMT"
-            }
+      "_id": "_local/afa899a9e59589c3d4ce5668e3218aef",
+      "_rev": "1-31f36e40158e717fbe9842e227b389df",
+      "_revisions": {
+        "ids": [
+          "31f36e40158e717fbe9842e227b389df"
         ],
-        "replication_id_version": 3,
-        "session_id": "04bf15bf1d9fa8ac1abc67d0c3e04f07",
-        "source_last_seq": 26
+        "start": 1
+      },
+      "history": [
+        {
+          "doc_write_failures": 0,
+          "docs_read": 6,
+          "docs_written": 6,
+          "end_last_seq": 26,
+          "end_time": "Thu, 07 Nov 2013 09:42:17 GMT",
+          "missing_checked": 6,
+          "missing_found": 6,
+          "recorded_seq": 26,
+          "session_id": "04bf15bf1d9fa8ac1abc67d0c3e04f07",
+          "start_last_seq": 0,
+          "start_time": "Thu, 07 Nov 2013 09:41:43 GMT"
+        }
+      ],
+      "replication_id_version": 3,
+      "session_id": "04bf15bf1d9fa8ac1abc67d0c3e04f07",
+      "source_last_seq": 26
     }
 
 
@@ -1632,9 +1635,9 @@ Replicator updates Replication Log on Source:
     Server: Werkzeug
 
     {
-        "id": "_local/afa899a9e59589c3d4ce5668e3218aef",
-        "ok": true,
-        "rev": "2-9b5d1e36bed6ae08611466e30af1259a"
+      "id": "_local/afa899a9e59589c3d4ce5668e3218aef",
+      "ok": true,
+      "rev": "2-9b5d1e36bed6ae08611466e30af1259a"
     }
 
 
@@ -1680,8 +1683,8 @@ with HTTP :statuscode:`400` and ``bad_request`` as error type:
 .. code-block:: javascript
 
   {
-      "error": "bad_request",
-      "reason": "invalid json"
+    "error": "bad_request",
+    "reason": "invalid json"
   }
 
 Forbidden
@@ -1694,8 +1697,8 @@ type:
 .. code-block:: javascript
 
   {
-      "error": "forbidden",
-      "reason": "please authorize"
+    "error": "forbidden",
+    "reason": "please authorize"
   }
 
 Unauthorized
@@ -1707,8 +1710,8 @@ HTTP :statuscode:`403` and ``unauthorized`` as error type:
 .. code-block:: javascript
 
   {
-      "error": "unauthorized",
-      "reason": "invalid name or password"
+    "error": "unauthorized",
+    "reason": "invalid name or password"
   }
 
 
@@ -1721,8 +1724,8 @@ response with HTTP :statuscode:`404` and ``not_found`` as error type:
 .. code-block:: javascript
 
   {
-      "error": "not_found",
-      "reason": "database \"target\" does not exists"
+    "error": "not_found",
+    "reason": "database \"target\" does not exists"
   }
 
 
@@ -1735,8 +1738,8 @@ HTTP :statuscode:`405` and ``method_not_allowed`` as error type:
 .. code-block:: javascript
 
   {
-      "error": "method_not_allowed",
-      "reason": "Only GET, PUT, DELETE allowed"
+    "error": "method_not_allowed",
+    "reason": "Only GET, PUT, DELETE allowed"
   }
 
 
@@ -1750,8 +1753,8 @@ and ``conflict`` as error type:
 .. code-block:: javascript
 
   {
-      "error": "conflict",
-      "reason": "document update conflict"
+    "error": "conflict",
+    "reason": "document update conflict"
   }
 
 
@@ -1767,8 +1770,8 @@ types that are previously mentioned:
 .. code-block:: javascript
 
   {
-      "error": "db_exists",
-      "reason": "database \"target\" exists"
+    "error": "db_exists",
+    "reason": "database \"target\" exists"
   }
 
 
@@ -1782,8 +1785,8 @@ response with error description (no restrictions on error type applied):
 .. code-block:: javascript
 
   {
-      "error": "worker_died",
-      "reason": "kaboom!"
+    "error": "worker_died",
+    "reason": "kaboom!"
   }
 
 
