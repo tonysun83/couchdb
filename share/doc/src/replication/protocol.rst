@@ -251,7 +251,7 @@ using :head:`/{db}` requests:
   .. code-block:: http
 
     HEAD /target HTTP/1.1
-    Host: localhost:5984
+    Host: localhost:5000
     User-Agent: CouchDB
 
 
@@ -292,7 +292,7 @@ request to create the Target:
 
     PUT /target HTTP/1.1
     Accept: application/json
-    Host: localhost:5984
+    Host: localhost:5000
     User-Agent: CouchDB
 
 
