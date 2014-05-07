@@ -18,9 +18,9 @@ CouchDB Replication Protocol
 
 :Version: 3
 
-The `CouchDB Replication Protocol` is a protocol for synchronizing JSON
-documents, that are based on Apache CouchDB `MVCC`_ Data model, between 2 peers
-over HTTP/1.1 using public :ref:`CouchDB REST API <api>`.
+The `CouchDB Replication Protocol` is a protocol for synchronising JSON
+documents between 2 peers over HTTP/1.1 by using the public :ref:`CouchDB REST
+API <api>` and is based on the Apache CouchDB MVCC_ Data model.
 
 
 Language
@@ -54,16 +54,16 @@ JSON:
     :rfc:`4627`.
 
 URI:
-    An URI is defined by :rfc:`2396` . It can be an URL as defined
+    An URI is defined by :rfc:`2396`. It can be an URL as defined
     in :rfc:`1738`.
 
 ID:
     An identifier (could be a UUID) as described in :rfc:`4122`.
 
 Revision:
-    A `MVCC`_ token value of next pattern: ``N-sig`` where ``N`` is ALWAYS
+    A `MVCC`_ token value of following pattern: ``N-sig`` where ``N`` is ALWAYS
     a positive integer and ``sig`` is the Document signature (custom).
-    Don't confuse it with the revision in version control systems!
+    Don't mix it up with the revision in version control systems!
 
 Leaf Revision:
     The last Document Revision in a series of changes. Documents may have
@@ -80,14 +80,14 @@ Changes Feed:
     the specified Database.
 
 Sequence:
-    An ID provided by the Changes Feed. It SHOULD be incremental,
-    but is not necessarily an integer.
+    An ID provided by the Changes Feed. It MUST be incremental,
+    but SHOULD NOT be always an integer.
 
 Source:
     Database from where the Documents are replicated.
 
 Target:
-    Database where the Document are replicated to.
+    Database where the Documents are replicated to.
 
 Checkpoint:
     Last processed Sequence ID.
@@ -99,16 +99,15 @@ Replicator:
     A service or an application which initiates and runs Replication.
 
 Filter Function:
-    A special function of any programming language that is used to determine
-    the need of Replication of single Document.
+    A special function of any programming language that is used to filter
+    Documents during Replication (see :ref:`filterfun`)
 
 Filter Function Name:
-    An ID of a Filter Function that may be used as a symbolic reference to apply
-    the related Filter Function to Replication.
+    An ID of a Filter Function that may be used as a symbolic reference (aka
+    callback function) to apply the related Filter Function to Replication.
 
 Filtered Replication:
-    Replication of Documents from Source to Target that passes
-    a Filter Function.
+    Replication of Documents from Source to Target which pass a Filter Function.
 
 Full Replication:
     Replication of all Documents from Source to Target.
@@ -129,7 +128,7 @@ Replication Log:
     A special Document that holds Replication history between Source and Target.
 
 Replication ID:
-    An unique value that unambiguously identifies the Replication Log.
+    A unique value that unambiguously identifies the Replication Log.
 
 
 Replication Protocol Algorithm
