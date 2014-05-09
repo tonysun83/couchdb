@@ -161,7 +161,7 @@ Verify Peers
   ' Verify Peers:                                                                  '
   '                                                                                '
   '                  404 Not Found   +---------------------------------+           '
-  '       +------------------------- |         Source Exists?          |           '
+  '       +------------------------- |     Check Source Existence      |           '
   '       |                          +---------------------------------+           '
   '       |                          |          HEAD /source           |           '
   '       |                          +---------------------------------+           '
@@ -169,7 +169,7 @@ Verify Peers
   '       |                            | 200 OK                                    '
   '       |                            v                                           '
   '       |                          +---------------------------------+           '
-  '       |                          |         Target Exists?          | ---+      '
+  '       |                          |     Check Target Existence      | ---+      '
   '       |                          +---------------------------------+    |      '
   '       |                          |          HEAD /target           |    |      '
   '       |                          +---------------------------------+    |      '
@@ -201,7 +201,11 @@ Verify Peers
   + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+
 
 First of all, Replicator SHOULD ensure that both Source and Target are exists
-using :head:`/{db}` requests:
+by using :head:`/{db}` requests.
+
+
+Check Source Existence
+^^^^^^^^^^^^^^^^^^^^^^
 
   **Request**:
 
@@ -223,6 +227,9 @@ using :head:`/{db}` requests:
     Server: CouchDB (Erlang/OTP)
 
 
+Check Source Existence
+^^^^^^^^^^^^^^^^^^^^^^
+
   **Request**:
 
   .. code-block:: http
@@ -242,25 +249,11 @@ using :head:`/{db}` requests:
     Date: Sat, 05 Oct 2013 08:51:11 GMT
     Server: CouchDB (Erlang/OTP)
 
-In case of non-existed Source, Replication SHOULD be aborted with an HTTP error
-response:
 
-  .. code-block:: http
+May be Create Target?
+^^^^^^^^^^^^^^^^^^^^^
 
-    HTTP/1.1 500 Internal Server Error
-    Cache-Control: must-revalidate
-    Content-Length: 56
-    Content-Type: application/json
-    Date: Sat, 05 Oct 2013 08:55:29 GMT
-    Server: CouchDB (Erlang OTP)
-
-    {
-      "error": "db_not_found",
-      "reason": "could not open source"
-    }
-
-
-In case of non-existed Target, Replicator MAY made additional :put:`/{db}`
+In case of non-existent Target, Replicator MAY made additional :put:`/{db}`
 request to create the Target:
 
   **Request**:
@@ -285,6 +278,46 @@ request to create the Target:
 
     {
       "ok": true
+    }
+
+However, Replicator MAY NOT succeeded on this operation due to insufficient
+privileges (which are granted by provided credential) and receiving
+:statuscode:`401` or :statuscode:`403` error SHOULD be expected and
+well handled:
+
+  .. code-block:: http
+
+    HTTP/1.1 500 Internal Server Error
+    Cache-Control: must-revalidate
+    Content-Length: 108
+    Content-Type: application/json
+    Date: Fri, 09 May 2014 13:50:32 GMT
+    Server: CouchDB (Erlang OTP)
+
+    {
+      "error": "unauthorized",
+      "reason": "unauthorized to access or create database http://localhost:5984/target"
+    }
+
+
+Abort
+^^^^^
+
+In case of non-existent Source or Target, Replication SHOULD be aborted with
+an HTTP error response:
+
+  .. code-block:: http
+
+    HTTP/1.1 500 Internal Server Error
+    Cache-Control: must-revalidate
+    Content-Length: 56
+    Content-Type: application/json
+    Date: Sat, 05 Oct 2013 08:55:29 GMT
+    Server: CouchDB (Erlang OTP)
+
+    {
+      "error": "db_not_found",
+      "reason": "could not open source"
     }
 
 
