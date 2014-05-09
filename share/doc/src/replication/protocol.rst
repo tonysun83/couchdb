@@ -524,37 +524,28 @@ Generate Replication ID
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 Before Replication will be started, Replicator MUST generate the Replication ID.
-This value is used to track Replication history, resume and continue previously
-interrupted replication process.
+This value is used to track Replication History, resume and continue previously
+interrupted Replication process.
 
-The algorithm of Replication ID generation is leaved upon Replicator
-implementation with only single restriction: it SHOULD unique define
-Replication as much as possible. Think about Replication ID as about
-hash value computed from HTTP request. As for CouchDB, next algorithm is used:
+The algorithm of Replication ID generation is depends on Replicator
+implementation with the only one restriction: it MUST unique define Replication
+process. As for CouchDB Replicator, the algorithm takes into account:
 
-- Take or generate persistent Replicator UUID value. For CouchDB, the local
+- Persistent Peer UUID value. For CouchDB, the local
   :config:option:`Server UUID <couchdb/uuid>` is used
-- Append Source and Target URI
-- If :ref:`filter <filterfun>` was used: extract his source code and append
-  it to the result
-- Append query parameters if any
-- Serialize the result list into binary form
-- Compute MD5 hash from the previous step and take his HEX digest
-- The result would be the Replication ID
+- Source and Target URI and is Source or Target local or remote Databases
+- If Target need to be created or not
+- If Replication Continuous or not
+- OAuth headers if any
+- Any custom headers
+- :ref:`Filter function <filterfun>` code if used
+- Changes Feed query parameters if any
 
 .. note::
 
-   Actually, CouchDB generates the Replication ID in more tricky way than was
-   described. It also counts request headers, OAuth params, is Source and/or
-   Target remote or local databases etc. Finally, it uses `term_to_binary`_
-   function to serialize the result into binary.
+   See `couch_replicator_utils.erl`_ for the detailed Replication ID generation
+   implementation.
 
-   All of this helps to produce unique value that clearly identifies similar
-   Replication processes.
-
-   See `couch_replicator_utils.erl`_ for the detailed implementation.
-
-   .. _term_to_binary: http://www.erlang.org/doc/man/erlang.html#term_to_binary-1
    .. _couch_replicator_utils.erl: https://git-wip-us.apache.org/repos/asf?p=couchdb.git;a=blob;f=src/couch_replicator/src/couch_replicator_utils.erl;h=d7778db;hb=HEAD
 
 
@@ -644,7 +635,7 @@ The Replication Log SHOULD contain the next fields:
   - **doc_write_failures** (*number*): Amount of failed writes
   - **docs_read** (*number*): Amount of read documents
   - **docs_written** (*number*): Amount of written documents
-  - **end_last_seq** (*number*): Last processed Update Sequence number
+  - **end_last_seq** (*number*): Last processed Update Sequence ID
   - **end_time** (*string*): Replication completion datetime in :rfc:`2822`
     format
   - **missing_checked** (*number*): Amount of checked revisions on Source
@@ -652,7 +643,7 @@ The Replication Log SHOULD contain the next fields:
   - **recorded_seq** (*number*): Recorded intermediate Checkpoint. **Required**
   - **session_id** (*string*): Unique session ID. Commonly, a random UUID value
     is used. **Required**
-  - **start_last_seq** (*number*): Start update sequence number
+  - **start_last_seq** (*number*): Start update Sequence ID
   - **start_time** (*string*): Replication start datetime in :rfc:`2822` format
 
 - **replication_id_version** (*number*): Replication protocol version. Defines
@@ -701,7 +692,7 @@ Compare Replication Logs
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 In case of successful retrieval of Replication Logs both from Source and Target,
-Replicator SHOULD locate their common ancestry by following next algorithm:
+Replicator MUST determine their common ancestry by following the next algorithm:
 
 - Compare ``session_id`` values for the chronological last session - if they
   matches, Source and Target has common Replication history and it seems
@@ -713,12 +704,6 @@ Replicator SHOULD locate their common ancestry by following next algorithm:
 
 If Source and Target has no common ancestry, the Replicator MUST run
 Full Replication.
-
-.. note::
-
-  To compare non-numeric sequence , you will have to keep an ordered
-  list of the sequences IDs as they appear in the :ref:`changes feed <changes>`
-  and compare their indices.
 
 
 Locate Changed Documents
