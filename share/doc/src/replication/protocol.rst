@@ -773,13 +773,13 @@ Listen Changes Feed
 
 When start up Checkpoint has been defined, Replicator SHOULD read
 :ref:`Changes Feed <changes>` of Source by using :get:`/{db}/_changes` request.
-This request SHOULD be made with next query parameters:
+This request to Changes Feed MUST be made with the next query parameters:
 
 - ``feed`` parameter defined type of response from Changes Feed: for Continuous
-  replication it MUST have value ``continuous``, otherwise it MAY has ``normal``
-  value or even be omitted.
+  replication it MUST have value ``continuous``, otherwise it SHOULD have
+  ``normal`` value.
 
-- ``style=all_docs`` query parameter instructs Source that he MUST include
+- ``style=all_docs`` query parameter instructs Source that it MUST include
   all Revision leaves for each document's event in output.
 
 - For Continuous Replication the ``heartbeat`` parameter defines heartbeat
@@ -794,20 +794,27 @@ This request SHOULD be made with next query parameters:
 - Additionally, ``filter`` parameter MAY be specified in case of using
   :ref:`filter function <changes/filter>` on server side.
 
-Reading whole feed with single shot may be not resource optimal solution and
-it is RECOMMENDED to process feed by chunks. However, there is no specific
-recommendation on chunks size since it heavily depended from available
-resources: large chunks requires more memory while they are reduces I/O
-operations and vice versa.
 
-Note, that Changes Feed output format is different for :ref:`feed=normal
-<changes/normal>` and :ref:`feed=continuous <changes/continuous>`.
+Read Batch of Changes
+^^^^^^^^^^^^^^^^^^^^^
+
+Reading whole feed with single shot may be not resource optimal solution and
+it is RECOMMENDED to process the feed by small chunks. However, there is
+no specific recommendation on chunks size since it heavily depended from
+available resources: large chunks requires more memory while they are reduces
+I/O operations and vice versa.
+
+Note, that Changes Feed output format is different for request with
+:ref:`feed=normal <changes/normal>` and with
+:ref:`feed=continuous <changes/continuous>` query parameter.
+
+Normal Feed:
 
   **Request**:
 
   .. code-block:: http
 
-    GET /source/_changes?feed=normal&style=all_docs&since=65530&heartbeat=10000 HTTP/1.1
+    GET /source/_changes?feed=normal&style=all_docs&heartbeat=10000 HTTP/1.1
     Accept: application/json
     Host: localhost:5984
     User-Agent: CouchDB
@@ -820,56 +827,86 @@ Note, that Changes Feed output format is different for :ref:`feed=normal
     HTTP/1.1 200 OK
     Cache-Control: must-revalidate
     Content-Type: application/json
-    Date: Fri, 11 Oct 2013 12:55:01 GMT
-    ETag: "7QS5IW7EMJ6QV18JO5ULIC4Z1"
+    Date: Fri, 09 May 2014 16:20:41 GMT
     Server: CouchDB (Erlang OTP)
     Transfer-Encoding: chunked
 
-    {
-      "last_seq": 65537,
-      "results": [
-        {
-          "changes": [
-            {
-              "rev": "1-9ffdbc124b782a72522247623599f108"
-            }
-          ],
-          "id": "doc_A",
-          "seq": 65532
-        },
-        {
-          "changes": [
-            {
-              "rev": "1-63bc95077a47da58d0ed02a24dd17a19"
-            },
-            {
-              "rev": "1-70598ca5d2c740068eb08e542e33a9b4"
-            }
-          ],
-          "id": "doc_B",
-          "seq": 65535
-        },
-        {
-          "changes": [
-            {
-              "rev": "1-846f74662063d35c80bb2d0d12a13f8f"
-            }
-          ],
-          "id": "doc_C",
-          "seq": 65536
-        },
-        {
-          "changes": [
-            {
-              "rev": "2-17aea1aac0cbd7255793f1f05de334e5"
-            }
-          ],
-          "deleted": true,
-          "id": "doc_Z",
-          "seq": 65537
-        }
-      ]
-    }
+    {"results":[
+    {"seq":14,"id":"f957f41e7d517efd0e9902a79d5da540","changes":[{"rev":"3-46a39451b3cb2482d1d75c5315e7af73"}],"deleted":true}
+    {"seq":29,"id":"ddf339ddf5fc74e274bfe78e1dccbd0c","changes":[{"rev":"10-304cae84fd862832ea9814f02920d4b2"}]}
+    {"seq":37,"id":"d3cc62f5cfd7a6b579f356bfdb8acc2d","changes":[{"rev":"2-eec205a9d413992850a6e32678485900"}],"deleted":true}
+    {"seq":39,"id":"f13bd08bb40ecefd9a246c884e5791c0","changes":[{"rev":"1-b35ddc60b362eddfb3a736f8075e6f4b"}]}
+    {"seq":41,"id":"e0a998677655f7cbeafbf66587b30d18","changes":[{"rev":"2-c1c6c44c4bc3c9344b037c8690468605"}]}
+    {"seq":42,"id":"a75bdfc59749f6e99551ae25786fd4df","changes":[{"rev":"1-967a00dff5e02add41819138abb3284d"}]}
+    {"seq":43,"id":"a5f467a03a436f790c788b76a51dac57","changes":[{"rev":"1-5575e26acdeb1df561bb5b70b26ba151"}]}
+    {"seq":45,"id":"470c30046193b2ba2a05b9ab9050c8fa","changes":[{"rev":"11-c292a412e4e7bafb71030be373037ea2"}]}
+    {"seq":46,"id":"b1cb850826be324587dbdee51d1076cf","changes":[{"rev":"10-ABC"}]}
+    {"seq":47,"id":"49ec0489e24f27e9fe29c83f687b8366","changes":[{"rev":"157-b01fd3ec501b4f205f916d6318e0154f"},{"rev":"123-6f7c1b7c97a9e4f0d22bdf130e8fd817"}]}
+    {"seq":49,"id":"dad103794f2b77952d3adedad021ab2b","changes":[{"rev":"1-93464cc455ed8cb5bbaffaf9c1108459"},{"rev":"6-5b8a52c22580e922e792047cff3618f3"}]}
+    {"seq":50,"id":"734648778ee90cab40a33d346c3eb441","changes":[{"rev":"1-9f08f9cb34395f44dba8f5ba4658f6f8"}]}
+    {"seq":51,"id":"7ae193028f68cde9a15f207afa842f11","changes":[{"rev":"1-57bfa8896af4bfbdacc11a26dc2bd140"}]}
+    {"seq":63,"id":"6a7a6c86ada4bbc13308a83db0931b53","changes":[{"rev":"5-acf6e96ac71e54dd3fd8fe6087acb83d"}],"deleted":true}
+    {"seq":64,"id":"dfb9850aced9d56bbd56141111207509","changes":[{"rev":"1-102f3569e833fa883cd5e72e6c64078b"}]}
+    {"seq":65,"id":"c532afa7a005f53bbac724d15df809ca","changes":[{"rev":"1-64918e35f4f5c1a57485d55cc2f23a86"}]}
+    {"seq":66,"id":"af8a95089b914774baac91053f5ab676","changes":[{"rev":"1-3db2d29c3c3ff59561620b7901c1c901"}]}
+    {"seq":67,"id":"caa3ddedf0134feb17d47e141c27849c","changes":[{"rev":"1-64918e35f4f5c1a57485d55cc2f23a86"}]}
+    {"seq":68,"id":"79f3b4e9a83eb6caac5f26b82895c7bc","changes":[{"rev":"1-102f3569e833fa883cd5e72e6c64078b"}]}
+    {"seq":69,"id":"1d89d16fa7523f80468ad4915991d04d","changes":[{"rev":"1-3db2d29c3c3ff59561620b7901c1c901"}]}
+    {"seq":71,"id":"abae73489fd04deee0034ff5750005d0","changes":[{"rev":"2-7051cbe5c8faecd085a3fa619e6e6337"}]}
+    {"seq":77,"id":"6c25534f0733a65b6b3ebc3be2b33f57","changes":[{"rev":"9-CDE"},{"rev":"3-00e7ae9eeb50cabd81126e9f39b871cf"},{"rev":"1-ABC"}]}
+    {"seq":78,"id":"SpaghettiWithMeatballs","changes":[{"rev":"22-5f950945d8c4671cb28e4e3a0db0e2c5"}]}
+    ],
+    "last_seq":78}
+
+Continuous Feed:
+
+  **Request**:
+
+  .. code-block:: http
+
+    GET /source/_changes?feed=continuous&style=all_docs&heartbeat=10000 HTTP/1.1
+    Accept: application/json
+    Host: localhost:5984
+    User-Agent: CouchDB
+
+  **Response**:
+
+  .. code-block:: http
+
+    HTTP/1.1 200 OK
+    Cache-Control: must-revalidate
+    Content-Type: application/json
+    Date: Fri, 09 May 2014 16:22:22 GMT
+    Server: CouchDB (Erlang OTP)
+    Transfer-Encoding: chunked
+
+    {"seq":14,"id":"f957f41e7d517efd0e9902a79d5da540","changes":[{"rev":"3-46a39451b3cb2482d1d75c5315e7af73"}],"deleted":true}
+    {"seq":29,"id":"ddf339ddf5fc74e274bfe78e1dccbd0c","changes":[{"rev":"10-304cae84fd862832ea9814f02920d4b2"}]}
+    {"seq":37,"id":"d3cc62f5cfd7a6b579f356bfdb8acc2d","changes":[{"rev":"2-eec205a9d413992850a6e32678485900"}],"deleted":true}
+    {"seq":39,"id":"f13bd08bb40ecefd9a246c884e5791c0","changes":[{"rev":"1-b35ddc60b362eddfb3a736f8075e6f4b"}]}
+    {"seq":41,"id":"e0a998677655f7cbeafbf66587b30d18","changes":[{"rev":"2-c1c6c44c4bc3c9344b037c8690468605"}]}
+    {"seq":42,"id":"a75bdfc59749f6e99551ae25786fd4df","changes":[{"rev":"1-967a00dff5e02add41819138abb3284d"}]}
+    {"seq":43,"id":"a5f467a03a436f790c788b76a51dac57","changes":[{"rev":"1-5575e26acdeb1df561bb5b70b26ba151"}]}
+    {"seq":45,"id":"470c30046193b2ba2a05b9ab9050c8fa","changes":[{"rev":"11-c292a412e4e7bafb71030be373037ea2"}]}
+    {"seq":46,"id":"b1cb850826be324587dbdee51d1076cf","changes":[{"rev":"10-ABC"}]}
+    {"seq":47,"id":"49ec0489e24f27e9fe29c83f687b8366","changes":[{"rev":"157-b01fd3ec501b4f205f916d6318e0154f"},{"rev":"123-6f7c1b7c97a9e4f0d22bdf130e8fd817"}]}
+    {"seq":49,"id":"dad103794f2b77952d3adedad021ab2b","changes":[{"rev":"1-93464cc455ed8cb5bbaffaf9c1108459"},{"rev":"6-5b8a52c22580e922e792047cff3618f3"}]}
+    {"seq":50,"id":"734648778ee90cab40a33d346c3eb441","changes":[{"rev":"1-9f08f9cb34395f44dba8f5ba4658f6f8"}]}
+    {"seq":51,"id":"7ae193028f68cde9a15f207afa842f11","changes":[{"rev":"1-57bfa8896af4bfbdacc11a26dc2bd140"}]}
+    {"seq":63,"id":"6a7a6c86ada4bbc13308a83db0931b53","changes":[{"rev":"5-acf6e96ac71e54dd3fd8fe6087acb83d"}],"deleted":true}
+    {"seq":64,"id":"dfb9850aced9d56bbd56141111207509","changes":[{"rev":"1-102f3569e833fa883cd5e72e6c64078b"}]}
+    {"seq":65,"id":"c532afa7a005f53bbac724d15df809ca","changes":[{"rev":"1-64918e35f4f5c1a57485d55cc2f23a86"}]}
+    {"seq":66,"id":"af8a95089b914774baac91053f5ab676","changes":[{"rev":"1-3db2d29c3c3ff59561620b7901c1c901"}]}
+    {"seq":67,"id":"caa3ddedf0134feb17d47e141c27849c","changes":[{"rev":"1-64918e35f4f5c1a57485d55cc2f23a86"}]}
+    {"seq":68,"id":"79f3b4e9a83eb6caac5f26b82895c7bc","changes":[{"rev":"1-102f3569e833fa883cd5e72e6c64078b"}]}
+    {"seq":69,"id":"1d89d16fa7523f80468ad4915991d04d","changes":[{"rev":"1-3db2d29c3c3ff59561620b7901c1c901"}]}
+    {"seq":71,"id":"abae73489fd04deee0034ff5750005d0","changes":[{"rev":"2-7051cbe5c8faecd085a3fa619e6e6337"}]}
+    {"seq":75,"id":"SpaghettiWithMeatballs","changes":[{"rev":"21-5949cfcd437e3ee22d2d98a26d1a83bf"}]}
+    {"seq":77,"id":"6c25534f0733a65b6b3ebc3be2b33f57","changes":[{"rev":"9-CDE"},{"rev":"3-00e7ae9eeb50cabd81126e9f39b871cf"},{"rev":"1-ABC"}]}
+    {"seq":78,"id":"SpaghettiWithMeatballs","changes":[{"rev":"22-5f950945d8c4671cb28e4e3a0db0e2c5"}]}
+
+For both Changes Feed formats record-per-line style is preserved to simplify
+iterative fetching and decoding JSON objects with less memory footprint.
 
 
 Calculate Revision Difference
@@ -877,7 +914,7 @@ Calculate Revision Difference
 
 After reading batch of changes from Changes Feed, Replicator forms special
 JSON mapping object for Document ID and related leaf Revisions and sends
-it to Target via :post:`/{db}/_revs_diff` request:
+the result to Target via :post:`/{db}/_revs_diff` request:
 
   **Request**:
 
@@ -927,8 +964,9 @@ it to Target via :post:`/{db}/_revs_diff` request:
       }
     }
 
-In response Replicator also receives Document ID -- Revisions mapping, but for
-Revisions that are not exists in Target and needs to be transferred from Source.
+In the response Replicator receives Document ID -- Revisions mapping as well,
+but for Revisions that are not exists in Target and REQUIRED to be transferred
+from Source.
 
 If all Revisions was found for specified Documents the response will contains
 empty JSON object:
@@ -965,6 +1003,45 @@ empty JSON object:
     Server: CouchDB (Erlang/OTP)
 
     {}
+
+
+Replication Completed
+^^^^^^^^^^^^^^^^^^^^^
+
+When no more changes left to process and no more Documents left to replicate,
+Replicator finishes the Replication process. If Replication wasn't Continuous,
+Replicator MAY return response to client with some statistic about the process.
+
+  .. code-block:: http
+
+    HTTP/1.1 200 OK
+    Cache-Control: must-revalidate
+    Content-Length: 414
+    Content-Type: application/json
+    Date: Fri, 09 May 2014 15:14:19 GMT
+    Server: CouchDB (Erlang OTP)
+
+    {
+      "history": [
+        {
+          "doc_write_failures": 2,
+          "docs_read": 2,
+          "docs_written": 0,
+          "end_last_seq": 2939,
+          "end_time": "Fri, 09 May 2014 15:14:19 GMT",
+          "missing_checked": 1835,
+          "missing_found": 2,
+          "recorded_seq": 2939,
+          "session_id": "05918159f64842f1fe73e9e2157b2112",
+          "start_last_seq": 0,
+          "start_time": "Fri, 09 May 2014 15:14:18 GMT"
+        }
+      ],
+      "ok": true,
+      "replication_id_version": 3,
+      "session_id": "05918159f64842f1fe73e9e2157b2112",
+      "source_last_seq": 2939
+    }
 
 
 Replicate Changes
