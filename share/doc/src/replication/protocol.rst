@@ -136,25 +136,20 @@ Replication ID:
 Replication Protocol Algorithm
 ==============================
 
-`CouchDB Replication Protocol` is a quite complex set of HTTP requests and
-business logic that is used to effectively transfer changes from Source to
-Target endpoint. To make things easy, this protocol definition contains
-a step-by-step description on how the Replication Protocol works, illustrated
-by ASCII flow charts and request/response examples.
+The `CouchDB Replication Protocol` is not something *magical*, but
+an agreement on usage of the public :ref:`CouchDB HTTP REST API <api>` in some
+specific way to effectively replicate Documents from Source to Target.
 
-.. note::
+The reference implementation, written in Erlang_, is provided by the
+couch_replicator_ module in Apache CouchDB.
 
-  The `CouchDB Replication Protocol` is not something *magical*, but
-  an agreement on usage of the public :ref:`CouchDB HTTP API <api>` in specific
-  way. So, in global terms, a Replicator is just a CouchDB client application
-  with some business logic oriented towards synchronizing Documents between
-  Source and Target.
-
-  In this Protocol Specification we'll try to describe all the important
-  details, but if you're not sure how some HTTP endpoint works, please consult
-  with the :ref:`CouchDB HTTP API <api>` reference for complete information
-  about request parameters and expected responses.
-
+It is RECOMMENDED to follow this algorithm specification and use the same
+HTTP endpoints and run requests with the same parameters to provide completely
+compatible solution. Custom Replicator implementations MAY use different
+HTTP API endpoints and requests parameters depending on their local specifics
+as like as they MAY implement only part of Replication Protocol to run only Push
+or Pull Replication. However, while such solutions could also run Replication
+process, they looses compatibility with CouchDB Replicator.
 
 .. note::
 
