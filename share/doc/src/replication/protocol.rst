@@ -23,8 +23,11 @@ documents between 2 peers over HTTP/1.1 by using the public :ref:`CouchDB REST
 API <api>` and is based on the Apache CouchDB MVCC_ Data model.
 
 
+Preface
+=======
+
 Language
-========
+--------
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -32,21 +35,18 @@ document are to be interpreted as described in :rfc:`2119`.
 
 
 Goals
-=====
+-----
 
 The primary goal of this specification is to describe the `CouchDB Replication
-Protocol`.
+Protocol` under the hood.
 
-The secondary goal is to provide detailed enough information about the protocol
-to make it easy to build tools that can synchronize data with CouchDB.
-
-In theory the `CouchDB Replication Protocol` can be used between all products
-that implement it. However, the reference implementation, written in Erlang_,
-is provided by the couch_replicator_ module in Apache CouchDB.
+The secondary goal is to provide enough detailed information about the protocol
+to make it easy to build tools on any language and platform that can synchronize
+data with CouchDB.
 
 
 Definitions
-===========
+-----------
 
 JSON:
     :abbr:`JSON (JavaScript Object Notation)` is a text format for the
@@ -70,7 +70,9 @@ Leaf Revision:
     multiple Leaf Revisions (aka Conflict Revisions) due to concurrent updates.
 
 Document:
-    A document is a JSON object with a unique ID and Revision.
+    A document is a JSON object with an ID and Revision defined in ``_id`` and
+    ``_rev`` fields respectively. Document's ID MUST be unique across
+    the Database where it stored.
 
 Database:
     A collection of Documents with a unique URI.
@@ -79,7 +81,7 @@ Changes Feed:
     A stream of Document-changing events (create, update, delete) for
     the specified Database.
 
-Sequence:
+Sequence ID:
     An ID provided by the Changes Feed. It MUST be incremental,
     but SHOULD NOT be always an integer.
 
@@ -89,11 +91,11 @@ Source:
 Target:
     Database where the Documents are replicated to.
 
-Checkpoint:
-    Last processed Sequence ID.
-
 Replication:
     The one-way directed synchronization process of Source and Target endpoints.
+
+Checkpoint:
+    Intermediate Recorded Sequence ID that used for Replication recovery.
 
 Replicator:
     A service or an application which initiates and runs Replication.
@@ -121,11 +123,11 @@ Pull Replication:
 Continuous Replication:
     Replication that "never stops": after processing all events from
     Changes Feed, Replicator doesn't close the connection, but awaits new change
-    events from the Source. The connection is kept alive by periodical
-    heartbeats.
+    events from the Source. The connection keeps alive by periodical heartbeats.
 
 Replication Log:
-    A special Document that holds Replication history between Source and Target.
+    A special Document that holds Replication history (recorded Checkpoints
+    and few more statistics) between Source and Target.
 
 Replication ID:
     A unique value that unambiguously identifies the Replication Log.
