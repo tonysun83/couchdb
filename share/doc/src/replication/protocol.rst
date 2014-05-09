@@ -329,10 +329,10 @@ Get Peers Information
   + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+
   ' Verify Peers:                                                    '
   '                         +------------------------+               '
-  '                         |     Target Exists?     |               '
+  '                         | Check Target Existence |               '
   '                         +------------------------+               '
   '                                     |                            '
-  '                                     | Yes                        '
+  '                                     | 200 OK                     '
   '                                     |                            '
   + - - - - - - - - - - - - - - - - - - | - - - - - - - - - - - - - -+
                                         |
@@ -372,14 +372,18 @@ Replicator retrieves basic information both from Source and Target using
 :get:`/{db}` request to them. The response MUST contains JSON object with
 the next mandatory fields:
 
-- **instance_start_time** (*string*): Timestamp of when the database was
+- **instance_start_time** (*string*): Timestamp of when the Database was
   opened, expressed in *microseconds* since the epoch.
-- **update_seq** (*number*): The current number of database updates.
+- **update_seq** (*number* / *string*): The current database Sequence ID.
 
 Any other fields are optional. The information that Replicator seeks
-is the ``update_seq`` field: this number will be used to define *temporary*
-(because Database data always could be updated) upper bounder for statistic
-calculations.
+is the ``update_seq`` field: this value will be used to define *temporary*
+(because Database data always could be updated) upper bounder for changes feed
+listening and statistic calculating to show proper Replication progress.
+
+
+Get Source Information
+^^^^^^^^^^^^^^^^^^^^^^
 
   **Request**:
 
@@ -417,6 +421,9 @@ calculations.
     }
 
 
+Get Target Information
+^^^^^^^^^^^^^^^^^^^^^^
+
   **Request**:
 
   .. code-block:: http
@@ -432,25 +439,25 @@ calculations.
   .. code-block:: http
 
     HTTP/1.1 200 OK
-    Content-Length: 238
+    Content-Length: 363
     Content-Type: application/json
     Date: Tue, 08 Oct 2013 12:37:01 GMT
     Server: CouchDB (Erlang/OTP)
 
     {
-      "committed_update_seq": 77,
-      "compact_running": false,
-      "data_size": 855302,
-      "db_name": "target",
-      "disk_format_version": 6,
-      "disk_size": 4829294,
-      "doc_count": 20,
-      "doc_del_count": 3,
-      "instance_start_time": "1399590946639288",
-      "purge_seq": 0,
-      "update_seq": 77
+        "compact_running": false,
+        "db_name": "target",
+        "disk_format_version": 5,
+        "disk_size": 77001455,
+        "doc_count": 1832,
+        "doc_del_count": 1,
+        "instance_start_time": "0",
+        "other": {
+            "data_size": 50829452
+        },
+        "purge_seq": 0,
+        "update_seq": "1841-g1AAAADveJzLYWBgYMlgTmGQT0lKzi9KdUhJMtbLSs1LLUst0kvOyS9NScwr0ctLLckBKmRKZEiy____f1YSAwPjSaJ1JTkAyaR6mMYrRGvMYwGSDA1ACqh3P1jzKRI1H4Bohth8KgsAfSlO9w"
     }
-
 
 
 Find out Common Ancestry
