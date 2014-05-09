@@ -149,7 +149,7 @@ compatible solution. Custom Replicator implementations MAY use different
 HTTP API endpoints and requests parameters depending on their local specifics
 as like as they MAY implement only part of Replication Protocol to run only Push
 or Pull Replication. However, while such solutions could also run Replication
-process, they looses compatibility with CouchDB Replicator.
+process, they loose compatibility with CouchDB Replicator.
 
 
 Verify Peers
