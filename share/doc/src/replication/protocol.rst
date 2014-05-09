@@ -773,12 +773,11 @@ Listen Changes Feed
 ^^^^^^^^^^^^^^^^^^^
 
 When start up Checkpoint has been defined, Replicator SHOULD read
-:ref:`Changes Feed <changes>` of Source by using :get:`/{db}/_changes` request.
-This request to Changes Feed MUST be made with the next query parameters:
+Source :ref:`Changes Feed <changes>` by using :get:`/{db}/_changes` request.
+This request MUST be made with the following query parameters:
 
-- ``feed`` parameter defined type of response from Changes Feed: for Continuous
-  replication it MUST have value ``continuous``, otherwise it SHOULD have
-  ``normal`` value.
+- ``feed`` parameter defines Changes Feed response style: for Continuous
+  Replication ``continuous`` value SHOULD be used, otherwise - ``normal``.
 
 - ``style=all_docs`` query parameter instructs Source that it MUST include
   all Revision leaves for each document's event in output.
@@ -792,8 +791,9 @@ This request to Changes Feed MUST be made with the next query parameters:
   In case of Full Replication it MAY be equaled ``0`` (number zero) or
   be omitted.
 
-- Additionally, ``filter`` parameter MAY be specified in case of using
-  :ref:`filter function <changes/filter>` on server side.
+Additionally, ``filter`` query parameter MAY be specified in case of using
+:ref:`filter function <changes/filter>` on Source server side as well as other
+custom parameters if any was provided.
 
 
 Read Batch of Changes
