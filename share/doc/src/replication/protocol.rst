@@ -151,26 +151,6 @@ as like as they MAY implement only part of Replication Protocol to run only Push
 or Pull Replication. However, while such solutions could also run Replication
 process, they looses compatibility with CouchDB Replicator.
 
-.. note::
-
-  Some notes about examples. All examples are copies of real requests and
-  responses that the CouchDB Replicator made during Replication process.
-
-  - The ``Host: localhost:5984`` header belongs to CouchDB instance which
-    contains Database named ``source``. The related response proves this
-    with ``Server: CouchDB (Erlang/OTP)`` header.
-
-  - The ``Host: localhost:5000`` is powered by a `custom Peer implementation`_
-    based on the `Flask`_ framework (his responses contains
-    ``Server: Werkzeug`` header).
-
-  - ``User-Agent: CouchDB`` is used by the Replicator and clearly defines
-    the side that runs Replication - for this Protocol Specification, this is
-    the CouchDB instance itself.
-
-.. _Flask: http://flask.pocoo.org/
-.. _custom Peer implementation: https://github.com/kxepal/replipy
-
 
 Verify Peers
 ------------
@@ -248,7 +228,7 @@ using :head:`/{db}` requests:
   .. code-block:: http
 
     HEAD /target HTTP/1.1
-    Host: localhost:5000
+    Host: localhost:5984
     User-Agent: CouchDB
 
 
@@ -260,7 +240,7 @@ using :head:`/{db}` requests:
     Cache-Control: must-revalidate
     Content-Type: application/json
     Date: Sat, 05 Oct 2013 08:51:11 GMT
-    Server: Werkzeug
+    Server: CouchDB (Erlang/OTP)
 
 In case of non-existed Source, Replication SHOULD be aborted with an HTTP error
 response:
@@ -289,7 +269,7 @@ request to create the Target:
 
     PUT /target HTTP/1.1
     Accept: application/json
-    Host: localhost:5000
+    Host: localhost:5984
     User-Agent: CouchDB
 
 
@@ -301,7 +281,7 @@ request to create the Target:
     Content-Length: 12
     Content-Type: application/json
     Date: Sat, 05 Oct 2013 08:58:41 GMT
-    Server: Werkzeug
+    Server: CouchDB (Erlang/OTP)
 
     {
       "ok": true
@@ -410,7 +390,7 @@ calculations.
 
     GET /target/ HTTP/1.1
     Accept: application/json
-    Host: localhost:5000
+    Host: localhost:5984
     User-Agent: CouchDB
 
 
@@ -418,17 +398,26 @@ calculations.
 
   .. code-block:: http
 
-    HTTP/1.0 200 OK
-    Content-Length: 80
+    HTTP/1.1 200 OK
+    Content-Length: 238
     Content-Type: application/json
     Date: Tue, 08 Oct 2013 12:37:01 GMT
-    Server: Werkzeug
+    Server: CouchDB (Erlang/OTP)
 
     {
+      "committed_update_seq": 77,
+      "compact_running": false,
+      "data_size": 855302,
       "db_name": "target",
-      "instance_start_time": "1381218659871282",
-      "update_seq": 64
+      "disk_format_version": 6,
+      "disk_size": 4829294,
+      "doc_count": 20,
+      "doc_del_count": 3,
+      "instance_start_time": "1399590946639288",
+      "purge_seq": 0,
+      "update_seq": 77
     }
+
 
 
 Find out Common Ancestry
@@ -873,7 +862,7 @@ it to Target via :post:`/{db}/_revs_diff` request:
     Accept: application/json
     Content-Length: 287
     Content-Type: application/json
-    Host: localhost:5000
+    Host: localhost:5984
     User-Agent: CouchDB
 
     {
@@ -898,7 +887,7 @@ it to Target via :post:`/{db}/_revs_diff` request:
     Content-Length: 88
     Content-Type: application/json
     Date: Fri, 25 Oct 2013 14:44:41 GMT
-    Server: Werkzeug
+    Server: CouchDB (Erlang/OTP)
 
     {
       "baz": {
@@ -927,7 +916,7 @@ empty JSON object:
     Accept: application/json
     Content-Length: 160
     Content-Type: application/json
-    Host: localhost:5000
+    Host: localhost:5984
     User-Agent: CouchDB
 
     {
@@ -948,7 +937,7 @@ empty JSON object:
     Content-Length: 2
     Content-Type: application/json
     Date: Fri, 25 Oct 2013 14:45:00 GMT
-    Server: Werkzeug
+    Server: CouchDB (Erlang/OTP)
 
     {}
 
@@ -1249,7 +1238,7 @@ feature.
     Accept: application/json
     Content-Length: 826
     Content-Type:application/json
-    Host: localhost:5000
+    Host: localhost:5984
     User-Agent: CouchDB
     X-Couch-Full-Commit: false
 
@@ -1326,7 +1315,7 @@ updating will fall for all uploaded Documents.
     Content-Length: 246
     Content-Type: application/json
     Date: Sun, 10 Nov 2013 19:02:26 GMT
-    Server: Werkzeug
+    Server: CouchDB (Erlang/OTP)
 
     [
       {
@@ -1374,7 +1363,7 @@ any serialization overhead.
     Accept: application/json
     Content-Length: 1030
     Content-Type: multipart/related; boundary="864d690aeb91f25d469dec6851fb57f2"
-    Host: localhost:5000
+    Host: localhost:5984
     User-Agent: CouchDB
 
     --2fa48cba80d0cdba7829931fe8acce9d
@@ -1438,7 +1427,7 @@ any serialization overhead.
     Content-Length: 105
     Content-Type: application/json
     Date: Fri, 08 Nov 2013 16:35:27 GMT
-    Server: Werkzeug
+    Server: CouchDB (Erlang/OTP)
 
     {
       "ok": true,
@@ -1460,7 +1449,7 @@ Target SHOULD response with :statuscode:`403`:
     Content-Length: 39
     Content-Type: application/json
     Date: Fri, 08 Nov 2013 16:35:27 GMT
-    Server: Werkzeug
+    Server: CouchDB (Erlang/OTP)
 
     {
       "error": "forbidden",
@@ -1491,7 +1480,7 @@ is lay down on disk or other *persistent* storage place. Target MUST return
     POST /target/_ensure_full_commit HTTP/1.1
     Accept: application/json
     Content-Type: application/json
-    Host: localhost:5000
+    Host: localhost:5984
 
   **Response**:
 
@@ -1502,7 +1491,7 @@ is lay down on disk or other *persistent* storage place. Target MUST return
     Content-Length: 53
     Content-Type: application/json
     Date: Web, 06 Nov 2013 18:20:43 GMT
-    Server: Werkzeug
+    Server: CouchDB (Erlang/OTP)
 
     {
       "instance_start_time": "1381218659871282",
@@ -1588,7 +1577,7 @@ Replicator updates Replication Log on Source:
     Accept: application/json
     Content-Length: 591
     Content-Type: application/json
-    Host: localhost:5000
+    Host: localhost:5984
     User-Agent: CouchDB
 
     {
@@ -1630,7 +1619,7 @@ Replicator updates Replication Log on Source:
     Content-Length: 106
     Content-Type: application/json
     Date: Thu, 07 Nov 2013 09:42:17 GMT
-    Server: Werkzeug
+    Server: CouchDB (Erlang/OTP)
 
     {
       "id": "_local/afa899a9e59589c3d4ce5668e3218aef",
