@@ -41,7 +41,8 @@ function(app, FauxtonAPI, PagingCollection) {
     };
   })();
 
-  
+
+
   Documents.Doc = FauxtonAPI.Model.extend({
     idAttribute: "_id",
     documentation: function(){
@@ -191,6 +192,10 @@ function(app, FauxtonAPI, PagingCollection) {
         if (typeof(this.id) === "undefined") {
           resp._id = resp.id;
         }
+        if (!resp._id){
+          delete resp.id;
+        }
+
       }
       if (resp.ok) {
         delete resp.ok;
