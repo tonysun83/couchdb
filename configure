@@ -48,6 +48,10 @@ LOGDIR=
 COUCHDB_USER=`whoami`
 COOKIE=
 
+EXIT_OK=0
+EXIT_INVALID_ARGUMENT=1
+EXIT_MISSING_ARGUMENT=2
+
 display_help () {
     cat << EOF
 Usage: $basename [OPTION]
@@ -97,7 +101,7 @@ parse_opts() {
         case $1 in
             -h|--help)
                 display_help
-                exit
+                exit $EXIT_OK
                 ;;
 
             --test)
@@ -137,7 +141,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--user" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --user=?*)
@@ -145,7 +149,7 @@ parse_opts() {
                 ;;
             --user=)
                 printf 'ERROR: "--user" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --prefix)
@@ -155,7 +159,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--prefix" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --prefix=?*)
@@ -163,7 +167,7 @@ parse_opts() {
                 ;;
             --prefix=)
                 printf 'ERROR: "--prefix" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --exec-prefix)
@@ -173,7 +177,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--exec-prefix" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --exec-prefix=?*)
@@ -181,7 +185,7 @@ parse_opts() {
                 ;;
             --exec-prefix=)
                 printf 'ERROR: "--exec-prefix" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --bindir)
@@ -191,7 +195,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--bindir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --bindir=?*)
@@ -199,7 +203,7 @@ parse_opts() {
                 ;;
             --bindir=)
                 printf 'ERROR: "--bindir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --libexecdir)
@@ -209,7 +213,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--libexecdir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --libexecdir=?*)
@@ -217,7 +221,7 @@ parse_opts() {
                 ;;
             --libexecdir=)
                 printf 'ERROR: "--libexecdir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --sysconfdir)
@@ -227,7 +231,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--sysconfdir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --sysconfdir=?*)
@@ -235,7 +239,7 @@ parse_opts() {
                 ;;
             --sysconfdir=)
                 printf 'ERROR: "--sysconfdir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --datarootdir)
@@ -245,7 +249,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--datarootdir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --datarootdir=?*)
@@ -253,7 +257,7 @@ parse_opts() {
                 ;;
             --datarootdir=)
                 printf 'ERROR: "--datarootdir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --datadir)
@@ -263,7 +267,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--datadir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --datadir=?*)
@@ -271,7 +275,7 @@ parse_opts() {
                 ;;
             --datadir=)
                 printf 'ERROR: "--datadir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --localstatedir)
@@ -281,7 +285,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--localstatedir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --localstatedir=?*)
@@ -289,7 +293,7 @@ parse_opts() {
                 ;;
             --localstatedir=)
                 printf 'ERROR: "--localstatedir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --runstatedir)
@@ -299,7 +303,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--runstatedir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --runstatedir=?*)
@@ -307,7 +311,7 @@ parse_opts() {
                 ;;
             --runstatedir=)
                 printf 'ERROR: "--runstatedir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --docdir)
@@ -317,7 +321,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--docdir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --docdir=?*)
@@ -325,7 +329,7 @@ parse_opts() {
                 ;;
             --docdir=)
                 printf 'ERROR: "--docdir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --mandir)
@@ -335,7 +339,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--mandir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --mandir=?*)
@@ -343,7 +347,7 @@ parse_opts() {
                 ;;
             --mandir=)
                 printf 'ERROR: "--mandir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --infodir)
@@ -353,7 +357,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--infodir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --infodir=?*)
@@ -361,7 +365,7 @@ parse_opts() {
                 ;;
             --infodir=)
                 printf 'ERROR: "--infodir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --libdir)
@@ -371,7 +375,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--libdir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --libdir=?*)
@@ -379,7 +383,7 @@ parse_opts() {
                 ;;
             --libdir=)
                 printf 'ERROR: "--libdir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --databasedir)
@@ -389,7 +393,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--databasedir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --databasedir=?*)
@@ -397,7 +401,7 @@ parse_opts() {
                 ;;
             --databasedir=)
                 printf 'ERROR: "--databasedir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --viewindexdir)
@@ -407,7 +411,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--viewindexdir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --viewindexdir=?*)
@@ -415,7 +419,7 @@ parse_opts() {
                 ;;
             --viewindexdir=)
                 printf 'ERROR: "--viewindexdir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --logdir)
@@ -425,7 +429,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--logdir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --logdir=?*)
@@ -433,7 +437,7 @@ parse_opts() {
                 ;;
             --logdir=)
                 printf 'ERROR: "--logdir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --htmldir)
@@ -443,7 +447,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--htmldir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --htmldir=?*)
@@ -451,7 +455,7 @@ parse_opts() {
                 ;;
             --htmldir=)
                 printf 'ERROR: "--htmldir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
             --pdfdir)
@@ -461,7 +465,7 @@ parse_opts() {
                     continue
                 else
                     printf 'ERROR: "--pdfdir" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                 fi
                 ;;
             --pdfdir=?*)
@@ -469,7 +473,7 @@ parse_opts() {
                 ;;
             --pdfdir=)
                 printf 'ERROR: "--pdfdir" requires a non-empty argument.\n' >&2
-                exit 1
+                exit $EXIT_INVALID_ARGUMENT
                 ;;
 
                 --cookie)
@@ -479,7 +483,7 @@ parse_opts() {
                         continue
                     else
                         printf 'ERROR: "--cookie" requires a non-empty argument.\n' >&2
-                        exit 1
+                        exit $EXIT_INVALID_ARGUMENT
                     fi
                     ;;
                 --cookie=?*)
@@ -487,7 +491,7 @@ parse_opts() {
                     ;;
                 --cookie=)
                     printf 'ERROR: "--cookie" requires a non-empty argument.\n' >&2
-                    exit 1
+                    exit $EXIT_INVALID_ARGUMENT
                     ;;
 
             --) # End of options
@@ -561,7 +565,7 @@ parse_opts() {
     fi
     if test -z "$COOKIE"; then
         echo "The --cookie is required. If you don’t want to set up a cluster, use $0 --cookie=monster"
-        exit 3
+        exit $EXIT_MISSING_ARGUMENT
     fi
 }
 
@@ -573,7 +577,7 @@ if [ "$TEST" = "1" ]; then
     echo $PREFIX $EXEC_PREFIX $BINDIR $LIBEXECDIR $SYSCONFDIR $DATAROOTDIR \
          $DATADIR $LOCALSTATEDIR $RUNSTATEDIR $DOCDIR $LIBDIR $DATABASEDIR \
          $VIEWDIR $LOGDIR $MANDIR $INFODIR $HTMLDIR $PDFDIR
-    exit 0
+    exit $EXIT_OK
 fi
 
 # Translate ./configure variables to CouchDB variables
