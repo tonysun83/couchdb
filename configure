@@ -556,7 +556,7 @@ fi
 
 INSTALLDIR=$LIBDIR/couchdb
 LOG_FILE=$LOGDIR/couch.log
-
+FQDN=`hostname`
 
 echo "==> configuring couchdb in rel/couchdb.config"
 cat > rel/couchdb.config << EOF
@@ -581,7 +581,7 @@ cat > rel/couchdb.config << EOF
 {log_file, "$LOG_FILE"}.
 {fauxton_root, "$DATAROOTDIR/couchdb/www"}.
 {user, "$COUCHDB_USER"}.
-{node_name, "-name couchdb"}.
+{node_name, "-name $FQDN"}.
 {cluster_port, 5984}.
 {backend_port, 5986}.
 EOF
