@@ -46,6 +46,7 @@ DATABASEDIR=
 VIEWDIR=
 LOGDIR=
 COUCHDB_USER=`whoami`
+COOKIE=
 
 display_help () {
     cat << EOF
@@ -66,6 +67,7 @@ Options:
   --disable-fauxton           do not build Fauxton
   --disable-docs              do not build any documentation or manpages
   --skip-deps                 do not update erlang dependencies
+  --cookie                    set the Erlang cookie value needed to talk to other nodes
 
 
   Installation directories:
@@ -470,6 +472,24 @@ parse_opts() {
                 exit 1
                 ;;
 
+                --cookie)
+                    if [ -n "$2" ]; then
+                        eval COOKIE=$2
+                        shift 2
+                        continue
+                    else
+                        printf 'ERROR: "--cookie" requires a non-empty argument.\n' >&2
+                        exit 1
+                    fi
+                    ;;
+                --cookie=?*)
+                    eval COOKIE=${1#*=}
+                    ;;
+                --cookie=)
+                    printf 'ERROR: "--cookie" requires a non-empty argument.\n' >&2
+                    exit 1
+                    ;;
+
             --) # End of options
                 shift
                 break
@@ -539,6 +559,10 @@ parse_opts() {
     if test -z "$PDFDIR"; then
         PDFDIR="$DOCDIR/pdf";
     fi
+    if test -z "$COOKIE"; then
+        echo "The --cookie is required. If you don’t want to set up a cluster, use $0 --cookie=monster"
+        exit 3
+    fi
 }
 
 parse_opts $@
@@ -581,7 +605,8 @@ cat > rel/couchdb.config << EOF
 {log_file, "$LOG_FILE"}.
 {fauxton_root, "$DATAROOTDIR/couchdb/www"}.
 {user, "$COUCHDB_USER"}.
-{node_name, "-name $FQDN"}.
+{node_name, "$FQDN"}.
+{cookie, "$COOKIE"}.
 {cluster_port, 5984}.
 {backend_port, 5986}.
 EOF
