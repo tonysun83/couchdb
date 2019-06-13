@@ -367,6 +367,9 @@ job_processor_update(#{t1 := T, j1 := J}) ->
         % Use proper transactions in a few places here instead of passing in
         % ?TX This is mostly to increase code coverage
 
+        % Use proper transactions in a few places here instead of passing in ?TX
+        % This is mostly to increase code coverage
+
         ?assertMatch({ok, #{job := true}}, fabric2_fdb:transactional(fun(Tx) ->
             couch_jobs:update(Tx, Job, #{<<"x">> => 1})
         end)),
