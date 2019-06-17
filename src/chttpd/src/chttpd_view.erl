@@ -45,7 +45,7 @@ design_doc_view(Req, Db, DDoc, ViewName, Keys) ->
     Max = chttpd:chunked_response_buffer_size(),
     VAcc = #vacc{db=Db, req=Req, threshold=Max},
     Options = [{user_ctx, Req#httpd.user_ctx}],
-    {ok, Resp} = fabric:query_view(Db, Options, DDoc, ViewName,
+    {ok, Resp} = fabric2_view:query(Db, Options, DDoc, ViewName,
             fun view_cb/2, VAcc, Args),
     {ok, Resp#vacc.resp}.
 
