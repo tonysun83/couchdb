@@ -112,6 +112,7 @@ handle_call(Msg, _From, St) ->
 handle_cast(Msg, St) ->
     {stop, {bad_cast, Msg}, St}.
 
+
 handle_info({Ref, ready}, St) when is_reference(Ref) ->
     % Don't crash out couch_jobs_server and the whole application would need to
     % eventually do proper cleanup in erlfdb:wait timeout code.
