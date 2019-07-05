@@ -119,7 +119,8 @@ DepDescs = [
 {meck,             "meck",             {tag, "0.8.8"}},
 
 %% TMP - Until this is moved to a proper Apache repo
-{erlfdb,           "erlfdb",           {branch, "master"}}
+{erlfdb,           "erlfdb",           {branch, "master"}},
+{search3, {url, "https://github.com/cloudant-labs/search3-erl"}, {branch, "use-rebar2"}}
 ],
 
 WithProper = lists:keyfind(with_proper, 1, CouchConfig) == {with_proper, true},
