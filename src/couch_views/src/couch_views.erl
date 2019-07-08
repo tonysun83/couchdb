@@ -34,15 +34,20 @@ map_query(Db, DDoc, ViewName, Callback, Acc0, Args0) ->
 
 
 process_args(#{} = Args) ->
-    Args1 = maps:filter(fun (_, V) -> V /= undefined end, Args),
+    Args1 = remove_ununsed_values(Args),
+    Defaults = #{
+            direction => fwd,
+            inclusive_end => true,
+            update => true,
+            skip => 0,
+            limit => ?MAX_VIEW_LIMIT
+        },
 
-    maps:merge(#{
-        direction => fwd,
-        inclusive_end => true,
-        update => true,
-        skip => 0,
-        limit => ?MAX_VIEW_LIMIT
-    }, Args1).
+    maps:merge(Defaults, Args1).
+
+
+remove_ununsed_values(Args) ->
+    maps:filter(fun (_, V) -> V /= undefined end, Args).
 
 
 maybe_build_index(_Db, _Mrst, #{update := false}) ->

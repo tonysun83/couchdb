@@ -19,7 +19,7 @@ defmodule ViewMapTest do
             "two"
           end
 
-        doc = %{
+        %{
           :_id => "doc-id-#{i}",
           :value => i,
           :some => "field",
@@ -77,17 +77,6 @@ defmodule ViewMapTest do
 
     resp = Couch.post("/#{db_name}/_bulk_docs", body: body)
     Enum.each(resp.body, &assert(&1["ok"]))
-
-    #        ddoc = %{
-    #            :_id => "_design/map",
-    #            views: %{
-    #                some: %{map: map_fun1},
-    #                map_some: %{map: map_fun2}
-    #            }
-    #        }
-    #        resp = Couch.put("/#{db_name}/#{ddoc._id}", body: ddoc)
-    #        IO.inspect resp
-    #        assert resp.status_code == 201
 
     {:ok, [db_name: db_name]}
   end

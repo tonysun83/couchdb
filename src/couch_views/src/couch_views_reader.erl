@@ -136,27 +136,12 @@ get_unpack_fun(TxDb, Opts, Callback) ->
     UnPackFwd = fun({K, V}, State) ->
         case couch_views_fdb:unpack_map_row(TxDb, K, V) of
             {key, _Id, RowKey} ->
-                maps:put(current_key, RowKey, State);
+                State#{current_key => RowKey};
             {value, Id, RowValue} ->
                 #{
-                    current_key := RowKey,
-                    acc := Acc,
-                    skip := Skip,
-                    db := Db
+                    current_key := RowKey
                 } = State,
-
-                case Skip > 0 of
-                    true ->
-                        maps:put(skip, Skip - 1, State);
-                    false ->
-                        Row = [{id, Id}, {key, RowKey}, {value, RowValue}],
-
-                        IncludeDoc = maps:get(include_docs, State, false),
-                        Row1 = maybe_include_doc(Db, Id, Row, IncludeDoc),
-
-                        {ok, AccNext} = Callback({row, Row1}, Acc),
-                        maps:put(acc, AccNext, State)
-                end
+                process_map_row(Id, RowKey, RowValue, State, Callback)
         end
     end,
 
@@ -164,32 +149,38 @@ get_unpack_fun(TxDb, Opts, Callback) ->
         case couch_views_fdb:unpack_map_row(TxDb, K, V) of
             {key, Id, RowKey} ->
                 #{
-                    current_value := RowValue,
-                    acc := Acc,
-                    skip := Skip,
-                    db := Db
+                    current_value := RowValue
                 } = State,
-
-                case Skip > 0 of
-                    true ->
-                        maps:put(skip, Skip - 1, State);
-                    false ->
-                        Row = [{id, Id}, {key, RowKey}, {value, RowValue}],
-
-                        IncludeDoc = maps:get(include_docs, State, false),
-                        Row1 = maybe_include_doc(Db, Id, Row, IncludeDoc),
-
-                        {ok, AccNext} = Callback({row, Row1}, Acc),
-                        maps:put(acc, AccNext, State)
-                end;
+                process_map_row(Id, RowKey, RowValue, State, Callback);
             {value, _Id, RowValue} ->
-                maps:put(current_value, RowValue, State)
+                State#{current_value => RowValue}
         end
     end,
 
     case lists:keyfind(reverse, 1, Opts) of
         {reverse, true} -> UnPackRev;
         _ -> UnPackFwd
+    end.
+
+
+process_map_row(Id, RowKey, RowValue, State, Callback) ->
+    #{
+        acc := Acc,
+        skip := Skip,
+        db := Db
+    } = State,
+
+    case Skip > 0 of
+        true ->
+            State#{skip := Skip -1};
+        false ->
+            Row = [{id, Id}, {key, RowKey}, {value, RowValue}],
+
+            IncludeDoc = maps:get(include_docs, State, false),
+            Row1 = maybe_include_doc(Db, Id, Row, IncludeDoc),
+
+            {ok, AccNext} = Callback({row, Row1}, Acc),
+            State#{acc := AccNext}
     end.
 
 

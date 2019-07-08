@@ -300,7 +300,6 @@ should_map_duplicate_keys() ->
         {row, [{id, <<"2">>}, {key, <<"2">>}, {value, 2}]},
         {row, [{id, <<"2">>}, {key, <<"2">>}, {value, 3}]}
     ]},
-    ?debugFmt("EXPE ~p ~n", [Expect]),
     ?assertEqual(Expect, Result).
 
 

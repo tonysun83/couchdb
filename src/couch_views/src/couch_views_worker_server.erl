@@ -31,8 +31,7 @@
 ]).
 
 
--define(TYPE_CHECK_PERIOD_DEFAULT, 500).
--define(MAX_JITTER_DEFAULT, 100).
+-define(MAX_WORKERS, 100).
 
 
 start_link() ->
@@ -41,8 +40,12 @@ start_link() ->
 
 init(_) ->
     couch_views_jobs:set_timeout(),
-    schedule_check(),
-    {ok, #{}}.
+    State0 = #{
+        workers => #{},
+        acceptor_pid => undefined
+    },
+    State = spawn_acceptor(State0),
+    {ok, State}.
 
 
 terminate(_, _St) ->
@@ -53,19 +56,20 @@ handle_call(Msg, _From, St) ->
     {stop, {bad_call, Msg}, {bad_call, Msg}, St}.
 
 
+handle_cast({job, Job, JobData}, State) ->
+    State1 = start_worker(State, Job, JobData),
+    State2 = spawn_acceptor(State1),
+    {noreply, State2};
+
 handle_cast(Msg, St) ->
     {stop, {bad_cast, Msg}, St}.
 
 
-handle_info(check_for_jobs, State) ->
-    accept_jobs(),
-    schedule_check(),
-    {noreply, State};
-
-handle_info({'DOWN', _Ref, process, Pid, Reason}, St) ->
+handle_info({'DOWN', _Ref, process, Pid, Reason}, State) ->
     LogMsg = "~p : process ~p exited with ~p",
     couch_log:error(LogMsg, [?MODULE, Pid, Reason]),
-    {noreply, St};
+    State1 = check_finished_process(State, Pid),
+    {noreply, State1};
 
 handle_info(Msg, St) ->
     couch_log:notice("~s ignoring info ~w", [?MODULE, Msg]),
@@ -76,35 +80,43 @@ code_change(_OldVsn, St, _Extra) ->
     {ok, St}.
 
 
-accept_jobs() ->
-    case couch_views_jobs:accept() of
-        not_found ->
-            ok;
-        {ok, Job, JobData} ->
-            start_worker(Job, JobData),
-            % keep accepting jobs until not_found
-            accept_jobs()
+start_worker(State, Job, JobData) ->
+    #{workers := Workers} = State,
+    {Pid, _Ref} = spawn_monitor(fun () -> couch_views_worker:start(Job, JobData) end),
+    Workers1 = Workers#{Pid => true},
+    State#{workers := Workers1}.
+
+
+spawn_acceptor(State) ->
+    #{
+        workers := Workers,
+        acceptor_pid := Pid
+    } = State,
+    MaxWorkers = config:get_integer("couch_views", "max_workers", ?MAX_WORKERS),
+    case maps:size(Workers) >= MaxWorkers of
+        false when not is_pid(Pid) ->
+            Parent = self(),
+            {Pid1, _Ref} = spawn_monitor(fun() -> blocking_acceptor(Parent) end),
+            State#{acceptor_pid := Pid1};
+        _ ->
+            State
     end.
 
 
-start_worker(Job, JobData) ->
-    % TODO Should I monitor it, or let jobs do that?
-    spawn_monitor(fun () -> couch_views_worker:start(Job, JobData) end),
-    ok.
+blocking_acceptor(Parent) ->
+    case couch_views_jobs:accept() of
+        not_found ->
+            blocking_acceptor(Parent);
+        {ok, Job, JobData} ->
+            gen_server:cast(Parent, {job, Job, JobData})
+    end.
 
 
-schedule_check() ->
-    Timeout = get_period_msec(),
-    MaxJitter = max(Timeout div 2, get_max_jitter_msec()),
-    Wait = Timeout + rand:uniform(max(1, MaxJitter)),
-    timer:send_after(Wait, self(), check_for_jobs).
+check_finished_process(#{acceptor_pid := Pid} = State, Pid) ->
+    State1 = State#{acceptor_pid := undefined},
+    spawn_acceptor(State1);
 
-
-get_period_msec() ->
-    config:get_integer("couch_views", "type_check_period_msec",
-        ?TYPE_CHECK_PERIOD_DEFAULT).
-
-
-get_max_jitter_msec() ->
-    config:get_integer("couch_views", "type_check_max_jitter_msec",
-        ?MAX_JITTER_DEFAULT).
+check_finished_process(State, Pid) ->
+    #{workers := Workers} = State,
+    Workers1 = maps:remove(Pid, Workers),
+    State#{workers := Workers1}.

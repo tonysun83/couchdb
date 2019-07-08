@@ -50,7 +50,7 @@ add(TxDb, Mrst) ->
     JobData = create_job_data(TxDb, Mrst, 0),
 
     JobId = create_job_id(TxDb, Mrst),
-    JTx = couch_jobs_fdb:get_jtx(),
+    JTx = couch_jobs_fdb:get_jtx(TxDb),
     couch_jobs:add(JTx, ?INDEX_JOB_TYPE, JobId, JobData).
 
 
