@@ -120,7 +120,7 @@ DepDescs = [
 
 %% TMP - Until this is moved to a proper Apache repo
 {erlfdb,           "erlfdb",           {branch, "master"}},
-{search3, {url, "https://github.com/cloudant-labs/search3-erl"}, {branch, "use-rebar2"}}
+{search3, {url, "https://github.com/cloudant-labs/search3-erl"}, {branch, "prototype-tony2"}}
 ],
 
 WithProper = lists:keyfind(with_proper, 1, CouchConfig) == {with_proper, true},
