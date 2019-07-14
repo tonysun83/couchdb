@@ -90,6 +90,7 @@ SubDirs = [
     "src/mango",
     "src/rexi",
     "src/setup",
+    "src/search3",
     "rel"
 ],
 
@@ -120,7 +121,7 @@ DepDescs = [
 
 %% TMP - Until this is moved to a proper Apache repo
 {erlfdb,           "erlfdb",           {branch, "master"}},
-{search3, {url, "https://github.com/cloudant-labs/search3-erl"}, {branch, "prototype-tony2"}}
+{search3, {url, "https://github.com/cloudant-labs/search3-erl"}, {branch, "prototype-tony2"}, [raw]}
 ],
 
 WithProper = lists:keyfind(with_proper, 1, CouchConfig) == {with_proper, true},
