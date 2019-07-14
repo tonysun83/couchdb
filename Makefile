@@ -140,8 +140,6 @@ fauxton: share/www
 search3:
 	rm -rf temp-search3
 	git clone https://github.com/cloudant-labs/search3-erl temp-search3
-	rm src/search3/src/search3_pb.erl
-	rm src/search3/src/search_client.erl
 	cd temp-search3 && $(MAKE)
 	cp temp-search3/src/search3_pb.erl src/search3/src/search3_pb.erl
 	cp temp-search3/src/search_client.erl src/search3/src/search_client.erl
